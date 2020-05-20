@@ -6,6 +6,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public class PacBoard extends JPanel{
 
@@ -49,6 +53,9 @@ public class PacBoard extends JPanel{
 
     MapData md_backup;
     PacWindow windowParent;
+
+    private ScheduledExecutorService winTimer;
+    protected int winSeconds = 3;
 
     public PacBoard(JLabel scoreboard,MapData md,PacWindow pw){
         this.scoreboard = scoreboard;
@@ -369,11 +376,32 @@ public class PacBoard extends JPanel{
 
         if(isWin){
             g.drawImage(vicImage,this.getSize().width/2-315,this.getSize().height/2-75,null);
+            if(winSeconds > 0) {
+                if(winTimer == null) {
+                    winTimer = Executors.newScheduledThreadPool(1);
+                    winTimer.scheduleAtFixedRate(new WinTimer(), 1000, 1000,  TimeUnit.MILLISECONDS);
+                }
+                g.setColor(Color.red);
+                g.setFont(new Font("Arial",Font.BOLD,20));
+                g.drawString("Starting new level in " + winSeconds + " seconds", this.getSize().width / 2 - 135, this.getSize().height / 2 + 100);
+            } else {
+                winSeconds = 3;
+                winTimer.shutdownNow();
+                winTimer = null;
+                windowParent.newLevel();
+            }
         }
 
 
     }
 
+    private class WinTimer implements Runnable {
+
+        @Override
+        public void run() {
+            --winSeconds;
+        }
+    }
 
     @Override
     public void processEvent(AWTEvent ae){
