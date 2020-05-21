@@ -34,6 +34,8 @@ public abstract class Ghost {
     protected boolean isWeak = false;
     protected boolean isDead = false;
 
+    protected Boolean toWeaken;
+
     public boolean isWeak() {
         return isWeak;
     }
@@ -207,8 +209,19 @@ public abstract class Ghost {
         unweak2 = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+
+                if(toWeaken != null && toWeaken) {
+                    unweakBlinks = 0;
+                    unWeakenTimer2.stop();
+                    unWeakenTimer1.start();
+                    isWhite = false;
+                    toWeaken = false;
+                    return;
+                }
+
                 if(unweakBlinks == 10){
                     unweaken();
+                    toWeaken = null;
                     unWeakenTimer2.stop();
                 }
                 if(unweakBlinks % 2 == 0){
@@ -297,11 +310,16 @@ public abstract class Ghost {
 
 
     public void weaken(){
+        if(toWeaken != null) {
+            toWeaken = true;
+        } else {
+            toWeaken = false;
+        }
         isWeak = true;
         moveTimer.setDelay(ghostWeakDelay);
         unweakBlinks = 0;
         isWhite = false;
-        unWeakenTimer1.start();
+        unWeakenTimer1.restart();
     }
 
     public void unweaken(){

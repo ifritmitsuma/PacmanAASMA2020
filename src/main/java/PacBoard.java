@@ -54,7 +54,7 @@ public class PacBoard extends JPanel{
     MapData md_backup;
     PacWindow windowParent;
 
-    private ScheduledExecutorService winTimer;
+    private Timer winTimer;
     protected int winSeconds = 3;
 
     public PacBoard(JLabel scoreboard,MapData md,PacWindow pw){
@@ -62,7 +62,7 @@ public class PacBoard extends JPanel{
         this.setDoubleBuffered(true);
         md_backup = md;
         windowParent = pw;
-        
+
         m_x = md.getX();
         m_y = md.getY();
         this.map = md.getMap();
@@ -147,7 +147,7 @@ public class PacBoard extends JPanel{
             }
         };
         redrawTimer = new Timer(16,redrawAL);
-        redrawTimer .start();
+        redrawTimer. start();
 
         //SoundPlayer.play("pacman_start.wav");
         siren = new LoopPlayer("siren.wav");
@@ -378,29 +378,25 @@ public class PacBoard extends JPanel{
             g.drawImage(vicImage,this.getSize().width/2-315,this.getSize().height/2-75,null);
             if(winSeconds > 0) {
                 if(winTimer == null) {
-                    winTimer = Executors.newScheduledThreadPool(1);
-                    winTimer.scheduleAtFixedRate(new WinTimer(), 1000, 1000,  TimeUnit.MILLISECONDS);
+                    winTimer = new Timer(1000, new ActionListener() {
+                        public void actionPerformed(ActionEvent evt) {
+                            --winSeconds;
+                            if(winSeconds == 0) {
+                                winTimer.stop();
+                            }
+                        }
+                    });
+                    winTimer.start();
                 }
                 g.setColor(Color.red);
                 g.setFont(new Font("Arial",Font.BOLD,20));
                 g.drawString("Starting new level in " + winSeconds + " seconds", this.getSize().width / 2 - 135, this.getSize().height / 2 + 100);
             } else {
-                winSeconds = 3;
-                winTimer.shutdownNow();
-                winTimer = null;
                 windowParent.newLevel();
             }
         }
 
 
-    }
-
-    private class WinTimer implements Runnable {
-
-        @Override
-        public void run() {
-            --winSeconds;
-        }
     }
 
     @Override
@@ -419,7 +415,7 @@ public class PacBoard extends JPanel{
             super.processEvent(ae);
         }
     }
-    
+
     public void restart(){
 
         siren.stop();

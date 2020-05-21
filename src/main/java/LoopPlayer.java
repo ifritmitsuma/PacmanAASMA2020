@@ -23,6 +23,9 @@ public class LoopPlayer {
 
     public void start(){
         try {
+            if(clip.isRunning()) {
+                clip.stop();
+            }
             clip.loop(Clip.LOOP_CONTINUOUSLY);
         } catch (Exception e) {
             System.err.println(e.getMessage());
