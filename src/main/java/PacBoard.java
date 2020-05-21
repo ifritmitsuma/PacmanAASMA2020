@@ -109,6 +109,9 @@ public class PacBoard extends JPanel{
                 case CYAN:
                     ghosts.add(new CyanGhost(gd.getX(), gd.getY(), this));
                     break;
+                case ORANGE:
+                    ghosts.add(new OrangeGhost(gd.getX(), gd.getY(), this));
+                    break;
             }
         }
 

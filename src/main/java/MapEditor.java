@@ -30,8 +30,9 @@ public class MapEditor extends JFrame {
         JLabel l5 = new JLabel("1 : Red Ghost (Chaser)");
         JLabel l6 = new JLabel("2 : Pink Ghost (Traveler)");
         JLabel l7 = new JLabel("3 : Cyan Ghost (Patrol)");
-        JLabel l8 = new JLabel("F : Fruit");
-        JLabel l9 = new JLabel("B : Ghost Base");
+        JLabel l8 = new JLabel("4 : Orange Ghost (Pokey)");
+        JLabel l9 = new JLabel("F : Fruit");
+        JLabel l10 = new JLabel("B : Ghost Base");
         //JLabel l4 = new JLabel("1 : Red Ghost (Chaser)");
 
         l0.setForeground(Color.yellow);
@@ -44,6 +45,7 @@ public class MapEditor extends JFrame {
         l7.setForeground(Color.yellow);
         l8.setForeground(Color.yellow);
         l9.setForeground(Color.yellow);
+        l10.setForeground(Color.yellow);
 
         ghostSelection.add(l0);
         ghostSelection.add(l1);
@@ -55,6 +57,7 @@ public class MapEditor extends JFrame {
         ghostSelection.add(l7);
         ghostSelection.add(l8);
         ghostSelection.add(l9);
+        ghostSelection.add(l10);
 
         setLayout(new BorderLayout());
         sideBar.add(ghostSelection,BorderLayout.NORTH);
@@ -110,6 +113,10 @@ public class MapEditor extends JFrame {
             if(c == '3'){
                 map[i][j] = 0;
                 customMap.getGhostsData().add(new GhostData(i,j,ghostType.CYAN));
+            }
+            if(c == '4'){
+                map[i][j] = 0;
+                customMap.getGhostsData().add(new GhostData(i,j,ghostType.ORANGE));
             }
             if(c == 'P'){
                 map[i][j] = 0;

@@ -6,7 +6,7 @@ X_XXXX_XXXXX_X_XXXXX_XXXX_X
 XP________________________X
 X_XXXX_XX_XXXXXXX_XX_XXXX_X
 X_XXXX_XX_XXXXXXX_XX_XXXX_X
-X______XX_________XX______X
+X___4__XX_________XX__4___X
 XXXXXX_XX_XXX_XXX_XX_XXXXXX
 =====X_XX_XXXOXXX_XX_X=====
 =====X2XX_________XX_X=====
