@@ -8,6 +8,10 @@ import java.util.Scanner;
 
 public class PacWindow extends JFrame {
 
+    JLabel scoreboard;
+
+    int level = 0;
+
     public PacWindow(){
         setTitle("AKP Pacman v1.0");
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -17,10 +21,12 @@ public class PacWindow extends JFrame {
         setSize(794,884);
         setLocationRelativeTo(null);
 
-        JLabel scoreboard = new JLabel("    Score : 0");
+        scoreboard = new JLabel("    Score : 0");
         scoreboard.setForeground(new Color(255, 243, 36));
 
-        MapData map1 = getMapFromResource("maps/map1_c.txt");
+        newLevel();
+
+        /*MapData map1 = getMapFromResource("maps/map2.txt");
         adjustMap(map1);
 
         /*map1.getTeleports().add(new TeleportTunnel(-1,14,27,14,moveType.LEFT));
@@ -37,7 +43,7 @@ public class PacWindow extends JFrame {
         map1.getPufoodPositions().add(new PowerUpFood(23,27,1));
         map1.getPufoodPositions().add(new PowerUpFood(22,27,4));
         map1.getPufoodPositions().add(new PowerUpFood(21,27,0));
-        map1.setGhostBasePosition(new Point(12,14));*/
+        map1.setGhostBasePosition(new Point(12,14));
 
 
         PacBoard pb = new PacBoard(scoreboard,map1,this);
@@ -47,6 +53,8 @@ public class PacWindow extends JFrame {
 
         this.getContentPane().add(scoreboard,BorderLayout.SOUTH);
         this.getContentPane().add(pb);
+
+         */
         setVisible(true);
     }
 
@@ -62,7 +70,7 @@ public class PacWindow extends JFrame {
         JLabel scoreboard = new JLabel("    Score : 0");
         scoreboard.setForeground(new Color(255, 243, 36));
 
-        //int[][] mapLoaded = loadMap(27,29,"/maps/map1.txt");
+        //int[][] mapLoaded = loadMap(27,29,"/maps/map1_backup.txt");
         adjustMap(md);
         PacBoard pb = new PacBoard(scoreboard,md,this);
         pb.setBorder(new CompoundBorder(new EmptyBorder(10,10,10,10),new LineBorder(Color.BLUE)));
@@ -249,5 +257,24 @@ public class PacWindow extends JFrame {
         System.out.println("Map Adjust OK !");
     }
 
+    public void newLevel() {
+
+        this.getContentPane().removeAll();
+        this.getContentPane().revalidate();
+
+        MapData map = getMapFromResource("maps/map" + (level + 1) + ".txt");
+
+        level = (level + 1) % 2;
+
+        adjustMap(map);
+
+        PacBoard pb = new PacBoard(scoreboard,map,this);
+
+        pb.setBorder(new CompoundBorder(new EmptyBorder(10,10,10,10),new LineBorder(Color.BLUE)));
+        addKeyListener(pb.pacman);
+
+        this.getContentPane().add(scoreboard,BorderLayout.SOUTH);
+        this.getContentPane().add(pb);
+    }
 
 }

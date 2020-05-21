@@ -6,6 +6,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public class PacBoard extends JPanel{
 
@@ -50,12 +54,15 @@ public class PacBoard extends JPanel{
     MapData md_backup;
     PacWindow windowParent;
 
+    private Timer winTimer;
+    protected int winSeconds = 3;
+
     public PacBoard(JLabel scoreboard,MapData md,PacWindow pw){
         this.scoreboard = scoreboard;
         this.setDoubleBuffered(true);
         md_backup = md;
         windowParent = pw;
-        
+
         m_x = md.getX();
         m_y = md.getY();
         this.map = md.getMap();
@@ -102,6 +109,9 @@ public class PacBoard extends JPanel{
                 case CYAN:
                     ghosts.add(new CyanGhost(gd.getX(), gd.getY(), this));
                     break;
+                case ORANGE:
+                    ghosts.add(new OrangeGhost(gd.getX(), gd.getY(), this));
+                    break;
             }
         }
 
@@ -140,7 +150,7 @@ public class PacBoard extends JPanel{
             }
         };
         redrawTimer = new Timer(16,redrawAL);
-        redrawTimer .start();
+        redrawTimer. start();
 
         //SoundPlayer.play("pacman_start.wav");
         siren = new LoopPlayer("siren.wav");
@@ -369,11 +379,28 @@ public class PacBoard extends JPanel{
 
         if(isWin){
             g.drawImage(vicImage,this.getSize().width/2-315,this.getSize().height/2-75,null);
+            if(winSeconds > 0) {
+                if(winTimer == null) {
+                    winTimer = new Timer(1000, new ActionListener() {
+                        public void actionPerformed(ActionEvent evt) {
+                            --winSeconds;
+                            if(winSeconds == 0) {
+                                winTimer.stop();
+                            }
+                        }
+                    });
+                    winTimer.start();
+                }
+                g.setColor(Color.red);
+                g.setFont(new Font("Arial",Font.BOLD,20));
+                g.drawString("Starting new level in " + winSeconds + " seconds", this.getSize().width / 2 - 135, this.getSize().height / 2 + 100);
+            } else {
+                windowParent.newLevel();
+            }
         }
 
 
     }
-
 
     @Override
     public void processEvent(AWTEvent ae){
@@ -391,7 +418,7 @@ public class PacBoard extends JPanel{
             super.processEvent(ae);
         }
     }
-    
+
     public void restart(){
 
         siren.stop();

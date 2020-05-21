@@ -1,5 +1,6 @@
 public enum ghostType{
     RED,
     PINK,
-    CYAN
+    CYAN,
+    ORANGE
 }
