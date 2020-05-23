@@ -32,6 +32,7 @@ public class PacBoard extends JPanel{
     ArrayList<Ghost> ghosts;
     ArrayList<TeleportTunnel> teleports;
 
+    boolean singleplayerGame;
     boolean isCustom = false;
     boolean isGameOver = false;
     boolean isWin = false;
@@ -57,7 +58,8 @@ public class PacBoard extends JPanel{
     private Timer winTimer;
     protected int winSeconds = 3;
 
-    public PacBoard(JLabel scoreboard,MapData md,PacWindow pw){
+    public PacBoard(JLabel scoreboard,MapData md,PacWindow pw, boolean singleplayerGame){
+    	this.singleplayerGame = singleplayerGame;
         this.scoreboard = scoreboard;
         this.setDoubleBuffered(true);
         md_backup = md;
@@ -423,7 +425,7 @@ public class PacBoard extends JPanel{
 
         siren.stop();
 
-        new PacWindow();
+        new PacWindow(singleplayerGame);
         windowParent.dispose();
 
         /*

@@ -9,11 +9,12 @@ import java.util.Scanner;
 public class PacWindow extends JFrame {
 
     JLabel scoreboard;
-
+    boolean singleplayerGame;
     int level = 0;
 
-    public PacWindow(){
-        setTitle("AKP Pacman v1.0");
+    public PacWindow(boolean singleplayerGame){
+    	this.singleplayerGame = singleplayerGame;
+        setTitle("Pacman");
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
         getContentPane().setBackground(Color.black);
@@ -59,7 +60,7 @@ public class PacWindow extends JFrame {
     }
 
     public PacWindow(MapData md){
-        setTitle("AKP Pacman v1.0");
+        setTitle("Pacman");
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
         getContentPane().setBackground(Color.black);
@@ -72,7 +73,7 @@ public class PacWindow extends JFrame {
 
         //int[][] mapLoaded = loadMap(27,29,"/maps/map1_backup.txt");
         adjustMap(md);
-        PacBoard pb = new PacBoard(scoreboard,md,this);
+        PacBoard pb = new PacBoard(scoreboard,md,this, singleplayerGame);
         pb.setBorder(new CompoundBorder(new EmptyBorder(10,10,10,10),new LineBorder(Color.BLUE)));
         addKeyListener(pb.pacman);
 
@@ -254,7 +255,6 @@ public class PacWindow extends JFrame {
                 mapd.setMap(map);
             }
         }
-        System.out.println("Map Adjust OK !");
     }
 
     public void newLevel() {
@@ -268,7 +268,7 @@ public class PacWindow extends JFrame {
 
         adjustMap(map);
 
-        PacBoard pb = new PacBoard(scoreboard,map,this);
+        PacBoard pb = new PacBoard(scoreboard,map,this,singleplayerGame);
 
         pb.setBorder(new CompoundBorder(new EmptyBorder(10,10,10,10),new LineBorder(Color.BLUE)));
         addKeyListener(pb.pacman);

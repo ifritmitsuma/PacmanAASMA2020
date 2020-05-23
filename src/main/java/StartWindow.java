@@ -1,15 +1,25 @@
-import javax.imageio.ImageIO;
-import javax.swing.*;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Font;
+import java.awt.FontFormatException;
+import java.awt.GraphicsEnvironment;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
 import java.io.IOException;
+
+import javax.imageio.ImageIO;
+import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.WindowConstants;
 
 public class StartWindow extends JFrame {
 
     public StartWindow(){
-        setSize(600,300);
+        setSize(600,400);
         getContentPane().setBackground(Color.black);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -36,17 +46,26 @@ public class StartWindow extends JFrame {
         buttonsC.setBackground(Color.black);
         //buttonsC.setLayout(new FlowLayout(FlowLayout.LEADING,20,10));
         buttonsC.setLayout(new BoxLayout(buttonsC,BoxLayout.Y_AXIS));
-        FansyButton startButton = new FansyButton("Start Game");
+        FansyButton startButton = new FansyButton("Singleplayer Game");
+        FansyButton aiButton = new FansyButton("AI Game");
         FansyButton customButton = new FansyButton("Customize Game");
 
         startButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        aiButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         customButton.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         startButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                PacWindow pw = new PacWindow();
-                //new PacWindow();
+                PacWindow pw = new PacWindow(true);
+                dispose();
+            }
+        });
+        
+        aiButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                PacWindow pw = new PacWindow(false);
                 dispose();
             }
         });
@@ -60,13 +79,11 @@ public class StartWindow extends JFrame {
         });
 
         buttonsC.add(startButton);
+        buttonsC.add(aiButton);
         buttonsC.add(customButton);
 
         getContentPane().add(buttonsC);
 
-        System.out.print('\n');
-        System.out.println("PacMan v1.0   Developed By : Armin Kazemi");
-        System.out.println("-----------------------------------------");
         setVisible(true);
     }
 }
