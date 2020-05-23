@@ -1,32 +1,24 @@
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Font;
-import java.awt.FontFormatException;
-import java.awt.GraphicsEnvironment;
+package com.aasma2020.pacman;
+
+import javax.imageio.ImageIO;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 
-import javax.imageio.ImageIO;
-import javax.swing.BoxLayout;
-import javax.swing.ImageIcon;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.WindowConstants;
-
 public class StartWindow extends JFrame {
 
-    public StartWindow(){
-        setSize(600,400);
+    public StartWindow() {
+        setSize(600, 400);
         getContentPane().setBackground(Color.black);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
         ImageIcon logo = new ImageIcon();
+        ClassLoader loader = Thread.currentThread().getContextClassLoader();
         try {
-        	logo = new ImageIcon(ImageIO.read(this.getClass().getResource("images/pacman_logo.png")));
+            logo = new ImageIcon(ImageIO.read(loader.getResource("images/pacman_logo.png")));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -34,18 +26,18 @@ public class StartWindow extends JFrame {
         //Register Custom fonts
         try {
             GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-            ge.registerFont(Font.createFont(Font.TRUETYPE_FONT, this.getClass().getResourceAsStream("fonts/crackman.ttf")));
-        } catch (IOException|FontFormatException e) {
+            ge.registerFont(Font.createFont(Font.TRUETYPE_FONT, loader.getResourceAsStream("fonts/crackman.ttf")));
+        } catch (IOException | FontFormatException e) {
             e.printStackTrace();
         }
 
         setLayout(new BorderLayout());
-        getContentPane().add(new JLabel(logo),BorderLayout.NORTH);
+        getContentPane().add(new JLabel(logo), BorderLayout.NORTH);
 
         JPanel buttonsC = new JPanel();
         buttonsC.setBackground(Color.black);
         //buttonsC.setLayout(new FlowLayout(FlowLayout.LEADING,20,10));
-        buttonsC.setLayout(new BoxLayout(buttonsC,BoxLayout.Y_AXIS));
+        buttonsC.setLayout(new BoxLayout(buttonsC, BoxLayout.Y_AXIS));
         FansyButton startButton = new FansyButton("Singleplayer Game");
         FansyButton aiButton = new FansyButton("AI Game");
         FansyButton customButton = new FansyButton("Customize Game");
@@ -61,7 +53,7 @@ public class StartWindow extends JFrame {
                 dispose();
             }
         });
-        
+
         aiButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {

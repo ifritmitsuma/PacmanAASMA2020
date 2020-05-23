@@ -1,3 +1,11 @@
+package com.aasma2020.pacman;
+
+import com.aasma2020.pacman.board.BoardElement;
+import com.aasma2020.pacman.communication.Agent;
+import com.aasma2020.pacman.communication.MapAreaInfo;
+import com.aasma2020.pacman.communication.Report;
+import com.aasma2020.pacman.communication.SocietyAgent;
+
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
@@ -8,7 +16,7 @@ import java.util.ArrayList;
 import java.util.concurrent.ThreadLocalRandom;
 
 
-public abstract class Ghost {
+public abstract class Ghost extends Agent implements SocietyAgent {
     //Anim Vars
     Timer animTimer;
     ActionListener animAL;
@@ -50,7 +58,6 @@ public abstract class Ghost {
     int addFactor = 1;
 
     public Point pixelPosition;
-    public Point logicalPosition;
 
     Image[] ghostR;
     Image[] ghostL;
@@ -69,9 +76,11 @@ public abstract class Ghost {
 
     protected PacBoard parentBoard;
 
+    private Point pacmanPosition;
+
     public Ghost (int x, int y,PacBoard pb,int ghostDelay) {
 
-        logicalPosition = new Point(x,y);
+        position = new Point(x,y);
         pixelPosition = new Point(28*x,28*y);
 
         parentBoard = pb;
@@ -81,26 +90,27 @@ public abstract class Ghost {
         ghostNormalDelay = ghostDelay;
 
         loadImages();
+        ClassLoader loader = Thread.currentThread().getContextClassLoader();
 
         //load weak Image
         ghostW = new Image[2];
         try {
-            ghostW[0] = ImageIO.read(this.getClass().getResource("images/ghost/blue/1.png"));
-            ghostW[1] = ImageIO.read(this.getClass().getResource("images/ghost/blue/3.png"));
+            ghostW[0] = ImageIO.read(loader.getResource("images/ghost/blue/1.png"));
+            ghostW[1] = ImageIO.read(loader.getResource("images/ghost/blue/3.png"));
         } catch (IOException e) {
             e.printStackTrace();
         }
 
         ghostWW = new Image[2];
         try {
-            ghostWW[0] = ImageIO.read(this.getClass().getResource("images/ghost/white/1.png"));
-            ghostWW[1] = ImageIO.read(this.getClass().getResource("images/ghost/white/3.png"));
+            ghostWW[0] = ImageIO.read(loader.getResource("images/ghost/white/1.png"));
+            ghostWW[1] = ImageIO.read(loader.getResource("images/ghost/white/3.png"));
         } catch (IOException e) {
             e.printStackTrace();
         }
 
         try {
-            ghostEye = ImageIO.read(this.getClass().getResource("images/eye.png"));
+            ghostEye = ImageIO.read(loader.getResource("images/eye.png"));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -121,19 +131,19 @@ public abstract class Ghost {
                     if(!isStuck) {
                         switch (activeMove) {
                             case RIGHT:
-                                logicalPosition.x++;
+                                position.x++;
                                 break;
                             case LEFT:
-                                logicalPosition.x--;
+                                position.x--;
                                 break;
                             case UP:
-                                logicalPosition.y--;
+                                position.y--;
                                 break;
                             case DOWN:
-                                logicalPosition.y++;
+                                position.y++;
                                 break;
                         }
-                        parentBoard.dispatchEvent(new ActionEvent(this,Messeges.UPDATE,null));
+                        dispatchEvent(Messeges.AREATEST);
                     }
 
 
@@ -142,9 +152,9 @@ public abstract class Ghost {
 
                     //animTimer.stop();
                     //System.out.println("LOGICAL POS :" + logicalPosition.x + " , " + logicalPosition.y);
-                    //if(todoMove != moveType.NONE) {
+                    //if(todoMove != com.aasma2020.pacman.moveType.NONE) {
                     //    activeMove = todoMove;
-                    //    todoMove = moveType.NONE;
+                    //    todoMove = com.aasma2020.pacman.moveType.NONE;
                     //}
                 }else{
                     isStuck = false;
@@ -157,7 +167,7 @@ public abstract class Ghost {
                         if(pixelPosition.x >= (parentBoard.m_x-1) * 28){
                             return;
                         }
-                        if((logicalPosition.x+1 < parentBoard.m_x) && (parentBoard.map[logicalPosition.x+1][logicalPosition.y]>0) && ((parentBoard.map[logicalPosition.x+1][logicalPosition.y]<26)||isPending)){
+                        if((position.x+1 < parentBoard.m_x) && (parentBoard.map[position.x+1][position.y]>0) && ((parentBoard.map[position.x+1][position.y]<26)||isPending)){
                             return;
                         }
                         pixelPosition.x ++;
@@ -166,7 +176,7 @@ public abstract class Ghost {
                         if(pixelPosition.x <= 0){
                             return;
                         }
-                        if((logicalPosition.x-1 >= 0) && (parentBoard.map[logicalPosition.x-1][logicalPosition.y]>0) && ((parentBoard.map[logicalPosition.x-1][logicalPosition.y]<26)||isPending)){
+                        if((position.x-1 >= 0) && (parentBoard.map[position.x-1][position.y]>0) && ((parentBoard.map[position.x-1][position.y]<26)||isPending)){
                             return;
                         }
                         pixelPosition.x --;
@@ -175,7 +185,7 @@ public abstract class Ghost {
                         if(pixelPosition.y <= 0){
                             return;
                         }
-                        if((logicalPosition.y-1 >= 0) && (parentBoard.map[logicalPosition.x][logicalPosition.y-1]>0) && ((parentBoard.map[logicalPosition.x][logicalPosition.y-1]<26)||isPending)){
+                        if((position.y-1 >= 0) && (parentBoard.map[position.x][position.y-1]>0) && ((parentBoard.map[position.x][position.y-1]<26)||isPending)){
                             return;
                         }
                         pixelPosition.y--;
@@ -184,14 +194,15 @@ public abstract class Ghost {
                         if(pixelPosition.y >= (parentBoard.m_y-1) * 28){
                             return;
                         }
-                        if((logicalPosition.y+1 < parentBoard.m_y) && (parentBoard.map[logicalPosition.x][logicalPosition.y+1]>0) && ((parentBoard.map[logicalPosition.x][logicalPosition.y+1]<26)||isPending)){
+                        if((position.y+1 < parentBoard.m_y) && (parentBoard.map[position.x][position.y+1]>0) && ((parentBoard.map[position.x][position.y+1]<26)||isPending)){
                             return;
                         }
                         pixelPosition.y ++;
                         break;
                 }
 
-                parentBoard.dispatchEvent(new ActionEvent(this,Messeges.COLTEST,null));
+                dispatchEvent(Messeges.AREATEST);
+                dispatchEvent(Messeges.COLTEST);
             }
         };
         moveTimer = new Timer(ghostDelay,moveAL);
@@ -250,6 +261,8 @@ public abstract class Ghost {
 
     }
 
+    protected abstract void dispatchEvent(int message);
+
     //load Images from Resource
     public abstract void loadImages();
 
@@ -260,21 +273,21 @@ public abstract class Ghost {
     public ArrayList<moveType> getPossibleMoves(){
         ArrayList<moveType> possibleMoves = new ArrayList<>();
 
-        if(logicalPosition.x >= 0 && logicalPosition.x < parentBoard.m_x-1 && logicalPosition.y >= 0 && logicalPosition.y < parentBoard.m_y-1 ) {
+        if(position.x >= 0 && position.x < parentBoard.m_x-1 && position.y >= 0 && position.y < parentBoard.m_y-1 ) {
             //System.out.println(this.toString());
-            if (!(parentBoard.map[logicalPosition.x + 1][logicalPosition.y] > 0)) {
+            if (!(parentBoard.map[position.x + 1][position.y] > 0)) {
                 possibleMoves.add(moveType.RIGHT);
             }
 
-            if (!(parentBoard.map[logicalPosition.x - 1][logicalPosition.y] > 0)) {
+            if (!(parentBoard.map[position.x - 1][position.y] > 0)) {
                 possibleMoves.add(moveType.LEFT);
             }
 
-            if(!(parentBoard.map[logicalPosition.x][logicalPosition.y-1]>0)){
+            if(!(parentBoard.map[position.x][position.y-1]>0)){
                 possibleMoves.add(moveType.UP);
             }
 
-            if(!(parentBoard.map[logicalPosition.x][logicalPosition.y+1]>0)){
+            if(!(parentBoard.map[position.x][position.y+1]>0)){
                 possibleMoves.add(moveType.DOWN);
             }
         }
@@ -339,11 +352,11 @@ public abstract class Ghost {
             //Do nothing
         }
         if(r==1){
-            logicalPosition.x += 1;
+            position.x += 1;
             pixelPosition.x += 28;
         }
         if(r==2){
-            logicalPosition.x -= 1;
+            position.x -= 1;
             pixelPosition.x -= 28;
         }
         isPending = true;
@@ -354,4 +367,33 @@ public abstract class Ghost {
         moveTimer.setDelay(ghostNormalDelay);
     }
 
+    public void setLastPacmanPosition(Point pacmanPosition) {
+        this.pacmanPosition = pacmanPosition;
+    }
+
+    @Override
+    public void sendReport(SocietyAgent agent) {
+        Report report = new Report();
+        report.setPacmanPosition(this.pacmanPosition);
+        agent.receiveReport(report);
+    }
+
+    @Override
+    public void receiveReport(Report report) {
+        this.pacmanPosition = report.getPacmanPosition();
+    }
+
+    @Override
+    public void decideAndAct(MapAreaInfo info) {
+
+        if(info.getPacman() != null) {
+            System.out.println("---- " + this.getClass().getSimpleName() + " ----");
+            System.out.println("Found Pacman!");
+        }
+      /* for(Ghost ghost : info.getGhosts().values()) {
+
+            System.out.println("Found a " + ghost.getClass().getSimpleName() + " ghost...");
+        }
+*/
+    }
 }

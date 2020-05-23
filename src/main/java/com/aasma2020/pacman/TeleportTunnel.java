@@ -1,3 +1,5 @@
+package com.aasma2020.pacman;
+
 import java.awt.*;
 
 public class TeleportTunnel {

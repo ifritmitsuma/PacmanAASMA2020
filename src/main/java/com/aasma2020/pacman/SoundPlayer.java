@@ -1,3 +1,5 @@
+package com.aasma2020.pacman;
+
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;

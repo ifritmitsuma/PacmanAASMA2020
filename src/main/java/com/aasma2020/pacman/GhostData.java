@@ -1,3 +1,5 @@
+package com.aasma2020.pacman;
+
 public class GhostData {
     private int x;
     private int y;

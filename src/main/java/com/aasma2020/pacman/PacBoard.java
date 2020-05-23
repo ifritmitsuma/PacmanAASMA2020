@@ -1,15 +1,14 @@
+package com.aasma2020.pacman;
+
+import com.aasma2020.pacman.communication.Agent;
+import com.aasma2020.pacman.communication.MapAreaInfo;
+
 import javax.imageio.ImageIO;
-import javax.sound.sampled.*;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 public class PacBoard extends JPanel{
 
@@ -122,26 +121,27 @@ public class PacBoard extends JPanel{
         setLayout(null);
         setSize(20*m_x,20*m_y);
         setBackground(Color.black);
+        ClassLoader loader = Thread.currentThread().getContextClassLoader();
 
         mapSegments = new Image[28];
         mapSegments[0] = null;
         for(int ms=1;ms<28;ms++){
             try {
-                mapSegments[ms] = ImageIO.read(this.getClass().getResource("images/map segments/"+ms+".png"));
+                mapSegments[ms] = ImageIO.read(loader.getResource("images/map segments/"+ms+".png"));
             }catch(Exception e){}
         }
 
         pfoodImage = new Image[5];
         for(int ms=0 ;ms<5;ms++){
             try {
-                pfoodImage[ms] = ImageIO.read(this.getClass().getResource("images/food/"+ms+".png"));
+                pfoodImage[ms] = ImageIO.read(loader.getResource("images/food/"+ms+".png"));
             }catch(Exception e){}
         }
         try{
-            foodImage = ImageIO.read(this.getClass().getResource("images/food.png"));
-            goImage = ImageIO.read(this.getClass().getResource("images/gameover.png"));
-            vicImage = ImageIO.read(this.getClass().getResource("images/victory.png"));
-            //pfoodImage = ImageIO.read(this.getClass().getResource("/images/pfood.png"));
+            foodImage = ImageIO.read(loader.getResource("images/food.png"));
+            goImage = ImageIO.read(loader.getResource("images/gameover.png"));
+            vicImage = ImageIO.read(loader.getResource("images/victory.png"));
+            //pfoodImage = ImageIO.read(loader.getResource("/images/pfood.png"));
         }catch(Exception e){}
 
 
@@ -154,7 +154,7 @@ public class PacBoard extends JPanel{
         redrawTimer = new Timer(16,redrawAL);
         redrawTimer. start();
 
-        //SoundPlayer.play("pacman_start.wav");
+        //com.aasma2020.pacman.SoundPlayer.play("pacman_start.wav");
         siren = new LoopPlayer("siren.wav");
         pac6 = new LoopPlayer("pac6.wav");
         siren.start();
@@ -169,18 +169,19 @@ public class PacBoard extends JPanel{
             if(pr.intersects(gr)){
                 if(!g.isDead()) {
                     if (!g.isWeak()) {
+                        g.setLastPacmanPosition(g.getPosition());
                         //Game Over
-                        siren.stop();
-                        SoundPlayer.play("pacman_lose.wav");
+                        /*siren.stop();
+                        com.aasma2020.pacman.SoundPlayer.play("pacman_lose.wav");
                         pacman.moveTimer.stop();
                         pacman.animTimer.stop();
                         g.moveTimer.stop();
                         isGameOver = true;
-                        scoreboard.setText("    Press R to try again !");
+                        scoreboard.setText("    Press R to try again !");*/
                         //scoreboard.setForeground(Color.red);
                         break;
                     } else {
-                        //Eat Ghost
+                        //Eat com.aasma2020.pacman.Ghost
                         SoundPlayer.play("pacman_eatghost.wav");
                         //getGraphics().setFont(new Font("Arial",Font.BOLD,20));
                         drawScore = true;
@@ -204,7 +205,7 @@ public class PacBoard extends JPanel{
         Food foodToEat = null;
         //Check food eat
         for(Food f : foods){
-            if(pacman.logicalPosition.x == f.position.x && pacman.logicalPosition.y == f.position.y)
+            if(pacman.getPosition().distance(f.getPosition()) == 0)
                 foodToEat = f;
         }
         if(foodToEat!=null) {
@@ -228,11 +229,11 @@ public class PacBoard extends JPanel{
         PowerUpFood puFoodToEat = null;
         //Check pu food eat
         for(PowerUpFood puf : pufoods){
-            if(pacman.logicalPosition.x == puf.position.x && pacman.logicalPosition.y == puf.position.y)
+            if(pacman.getPosition().distance(puf.getPosition()) == 0)
                 puFoodToEat = puf;
         }
         if(puFoodToEat!=null) {
-            //SoundPlayer.play("pacman_eat.wav");
+            //com.aasma2020.pacman.SoundPlayer.play("pacman_eat.wav");
             switch(puFoodToEat.type) {
                 case 0:
                     //PACMAN 6
@@ -255,20 +256,20 @@ public class PacBoard extends JPanel{
             //scoreboard.setText("    Score : "+score);
         }
 
-        //Check Ghost Undie
+        //Check com.aasma2020.pacman.Ghost Undie
         for(Ghost g:ghosts){
-            if(g.isDead() && g.logicalPosition.x == ghostBase.x && g.logicalPosition.y == ghostBase.y){
+            if(g.isDead() && g.getPosition().x == ghostBase.x && g.getPosition().y == ghostBase.y){
                 g.undie();
             }
         }
 
         //Check Teleport
         for(TeleportTunnel tp : teleports) {
-            if (pacman.logicalPosition.x == tp.getFrom().x && pacman.logicalPosition.y == tp.getFrom().y && pacman.activeMove == tp.getReqMove()) {
+            if (pacman.getPosition().x == tp.getFrom().x && pacman.getPosition().y == tp.getFrom().y && pacman.activeMove == tp.getReqMove()) {
                 //System.out.println("TELE !");
-                pacman.logicalPosition = tp.getTo();
-                pacman.pixelPosition.x = pacman.logicalPosition.x * 28;
-                pacman.pixelPosition.y = pacman.logicalPosition.y * 28;
+                pacman.setPosition(tp.getTo());
+                pacman.pixelPosition.x = pacman.getPosition().x * 28;
+                pacman.pixelPosition.y = pacman.getPosition().y * 28;
             }
         }
 
@@ -316,21 +317,21 @@ public class PacBoard extends JPanel{
             }
         }
 
-        //Draw Food
+        //Draw com.aasma2020.pacman.Food
         g.setColor(new Color(204, 122, 122));
         for(Food f : foods){
             //g.fillOval(f.position.x*28+22,f.position.y*28+22,4,4);
-            g.drawImage(foodImage,10+f.position.x*28,10+f.position.y*28,null);
+            g.drawImage(foodImage,10+f.getPosition().x*28,10+f.getPosition().y*28,null);
         }
 
         //Draw PowerUpFoods
         g.setColor(new Color(204, 174, 168));
         for(PowerUpFood f : pufoods){
             //g.fillOval(f.position.x*28+20,f.position.y*28+20,8,8);
-            g.drawImage(pfoodImage[f.type],10+f.position.x*28,10+f.position.y*28,null);
+            g.drawImage(pfoodImage[f.type],10+f.getPosition().x*28,10+f.getPosition().y*28,null);
         }
 
-        //Draw Pacman
+        //Draw com.aasma2020.pacman.Pacman
         switch(pacman.activeMove){
             case NONE:
             case RIGHT:
@@ -350,6 +351,11 @@ public class PacBoard extends JPanel{
         //Draw Ghosts
         for(Ghost gh : ghosts){
             g.drawImage(gh.getGhostImage(),10+gh.pixelPosition.x,10+gh.pixelPosition.y,null);
+
+            int radius = gh.getGhostImage().getWidth(null);
+
+            g.setColor(new Color(255,255,255,128));
+            g.fillOval(gh.pixelPosition.x - radius - 18, gh.pixelPosition.y - radius - 14, 5 * radius, 5 * radius);
         }
 
         if(clearScore){
@@ -407,18 +413,58 @@ public class PacBoard extends JPanel{
     @Override
     public void processEvent(AWTEvent ae){
 
-        if(ae.getID()==Messeges.UPDATE) {
-            update();
-        }else if(ae.getID()==Messeges.COLTEST) {
-            if (!isGameOver) {
-                collisionTest();
-            }
-        }else if(ae.getID()==Messeges.RESET){
-            if(isGameOver)
-                restart();
-        }else {
-            super.processEvent(ae);
+        switch(ae.getID()) {
+            case Messeges.UPDATE:
+                update();
+                break;
+            case Messeges.COLTEST:
+                if (!isGameOver) {
+                    collisionTest();
+                }
+                break;
+            case Messeges.AREATEST:
+                checkArea((Agent) ae.getSource());
+                break;
+            case Messeges.RESET:
+                if(isGameOver)
+                    restart();
+                break;
+            default:
+                super.processEvent(ae);
+                break;
         }
+    }
+
+    private void checkArea(Agent agent) {
+
+        Point center = new Point();
+
+        center.x = agent.getPosition().x - 5 - 14;
+        center.y = agent.getPosition().y - 5 - 14;
+
+        MapAreaInfo info = new MapAreaInfo(center, 5);
+
+        if(!(agent instanceof Pacman)) {
+            info.setPacman(pacman.getPosition());
+        }
+
+        for(Ghost ghost : ghosts) {
+            if(agent instanceof Ghost && ghost.equals(agent)) {
+                continue;
+            }
+            info.addGhost(ghost.getPosition(), ghost);
+        }
+
+        for(PowerUpFood puf : pufoods) {
+            info.addPowerUpFood(puf.getPosition(), puf);
+        }
+
+        for(Food f : foods) {
+            info.addFood(f.getPosition(), f);
+        }
+
+        agent.decideAndAct(info);
+
     }
 
     public void restart(){
@@ -433,7 +479,7 @@ public class PacBoard extends JPanel{
 
         isGameOver = false;
 
-        pacman = new Pacman(md_backup.getPacmanPosition().x,md_backup.getPacmanPosition().y,this);
+        pacman = new com.aasma2020.pacman.Pacman(md_backup.getPacmanPosition().x,md_backup.getPacmanPosition().y,this);
         addKeyListener(pacman);
 
         foods = new ArrayList<>();
@@ -447,7 +493,7 @@ public class PacBoard extends JPanel{
             for (int i = 0; i < m_x; i++) {
                 for (int j = 0; j < m_y; j++) {
                     if (map[i][j] == 0)
-                        foods.add(new Food(i, j));
+                        foods.add(new com.aasma2020.pacman.Food(i, j));
                 }
             }
         }else{
@@ -459,16 +505,16 @@ public class PacBoard extends JPanel{
         pufoods = md_backup.getPufoodPositions();
 
         ghosts = new ArrayList<>();
-        for(GhostData gd : md_backup.getGhostsData()){
+        for(com.aasma2020.pacman.GhostData gd : md_backup.getGhostsData()){
             switch(gd.getType()) {
                 case RED:
-                    ghosts.add(new RedGhost(gd.getX(), gd.getY(), this));
+                    ghosts.add(new com.aasma2020.pacman.RedGhost(gd.getX(), gd.getY(), this));
                     break;
                 case PINK:
-                    ghosts.add(new PinkGhost(gd.getX(), gd.getY(), this));
+                    ghosts.add(new com.aasma2020.pacman.PinkGhost(gd.getX(), gd.getY(), this));
                     break;
                 case CYAN:
-                    ghosts.add(new CyanGhost(gd.getX(), gd.getY(), this));
+                    ghosts.add(new com.aasma2020.pacman.CyanGhost(gd.getX(), gd.getY(), this));
                     break;
             }
         }

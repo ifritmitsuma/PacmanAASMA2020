@@ -1,3 +1,4 @@
+package com.aasma2020.pacman;
 
 public class Main {
 

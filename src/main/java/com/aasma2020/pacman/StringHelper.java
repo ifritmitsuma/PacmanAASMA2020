@@ -1,3 +1,5 @@
+package com.aasma2020.pacman;
+
 /**
  * Created by Armin on 4/29/2016.
  */

@@ -1,3 +1,5 @@
+package com.aasma2020.pacman;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -16,8 +18,9 @@ public class FansyButton extends JLabel implements MouseListener {
     public FansyButton(String str){
         super(str);
         Font customFont;
+        ClassLoader loader = Thread.currentThread().getContextClassLoader();
         try {
-            customFont = Font.createFont(Font.TRUETYPE_FONT, this.getClass().getResourceAsStream("fonts/crackman.ttf")).deriveFont(30f);
+            customFont = Font.createFont(Font.TRUETYPE_FONT, loader.getResourceAsStream("fonts/crackman.ttf")).deriveFont(30f);
             this.setFont(customFont);
         } catch (FontFormatException e) {
             e.printStackTrace();

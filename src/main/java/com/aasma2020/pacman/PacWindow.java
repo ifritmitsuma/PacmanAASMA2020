@@ -1,9 +1,10 @@
+package com.aasma2020.pacman;
+
 import javax.swing.*;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import java.awt.*;
-import java.util.Map;
 import java.util.Scanner;
 
 public class PacWindow extends JFrame {
@@ -13,7 +14,7 @@ public class PacWindow extends JFrame {
     int level = 0;
 
     public PacWindow(boolean singleplayerGame){
-    	this.singleplayerGame = singleplayerGame;
+        this.singleplayerGame = singleplayerGame;
         setTitle("Pacman");
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
@@ -85,7 +86,8 @@ public class PacWindow extends JFrame {
 
     public int[][] loadMap(int mx,int my,String relPath){
         try {
-            Scanner scn = new Scanner(this.getClass().getResourceAsStream(relPath));
+            ClassLoader loader = Thread.currentThread().getContextClassLoader();
+            Scanner scn = new Scanner(loader.getResourceAsStream(relPath));
             int[][] map;
             map = new int[mx][my];
             for(int y=0;y<my;y++){
@@ -103,7 +105,8 @@ public class PacWindow extends JFrame {
     public MapData getMapFromResource(String relPath){
         String mapStr = "";
         try {
-            Scanner scn = new Scanner(this.getClass().getResourceAsStream(relPath));
+            ClassLoader loader = Thread.currentThread().getContextClassLoader();
+            Scanner scn = new Scanner(loader.getResourceAsStream(relPath));
             StringBuilder sb = new StringBuilder();
             String line;
             while(scn.hasNextLine()){
@@ -135,7 +138,7 @@ public class PacWindow extends JFrame {
                 boolean tr = false;
                 boolean bl = false;
                 boolean br = false;
-                
+
 
                 if(map[x][y]>0 && map[x][y]<26) {
                     int mustSet = 0;
