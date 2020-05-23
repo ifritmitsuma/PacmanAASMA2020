@@ -74,7 +74,7 @@ public class PacBoard extends JPanel{
 
         //loadMap();
 
-        pacman = new Pacman(md.getPacmanPosition().x,md.getPacmanPosition().y,this);
+        pacman = new Pacman(md.getPacmanPosition().x,md.getPacmanPosition().y,this,singleplayerGame);
         addKeyListener(pacman);
 
         foods = new ArrayList<>();
