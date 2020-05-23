@@ -12,17 +12,22 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Random;
 
 public class Pacman extends Agent implements KeyListener{
 
-    //Move Vars
+    Random rnd = new Random(420);
+
+    // Move Vars
     Timer moveTimer;
     ActionListener moveAL;
     public moveType activeMove;
     moveType todoMove;
     boolean isStuck = true;
+    boolean singleplayerGame;
 
-    //Animation Vars
+    // Animation Vars
     Timer animTimer;
     ActionListener animAL;
     Image[] pac;
@@ -33,11 +38,10 @@ public class Pacman extends Agent implements KeyListener{
 
     private PacBoard parentBoard;
 
-
-    public Pacman (int x, int y,PacBoard pb) {
-
-        position = new Point(x,y);
-        pixelPosition = new Point(28*x,28*y);
+    public Pacman(int x, int y, PacBoard pb, boolean singleplayerGame) {
+        this.singleplayerGame = singleplayerGame;
+        position = new Point(x, y);
+        pixelPosition = new Point(28 * x, 28 * y);
 
         parentBoard = pb;
 
@@ -53,29 +57,28 @@ public class Pacman extends Agent implements KeyListener{
             pac[2] = ImageIO.read(loader.getResource("images/pac/pac2.png"));
             pac[3] = ImageIO.read(loader.getResource("images/pac/pac3.png"));
             pac[4] = ImageIO.read(loader.getResource("images/pac/pac4.png"));
-        }catch(IOException e){
+        } catch (IOException e) {
             System.err.println("Cannot Read Images !");
         }
 
-        //animation timer
+        // animation timer
         animAL = new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 activeImage = activeImage + addFactor;
-                if(activeImage==4 || activeImage==0){
+                if (activeImage == 4 || activeImage == 0) {
                     addFactor *= -1;
                 }
             }
         };
-        animTimer = new Timer(40,animAL);
+        animTimer = new Timer(40, animAL);
         animTimer.start();
-
 
         moveAL = new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
 
-                //update logical position
-                if((pixelPosition.x % 28 == 0) && (pixelPosition.y % 28 == 0)){
-                    if(!isStuck) {
+                // update logical position
+                if ((pixelPosition.x % 28 == 0) && (pixelPosition.y % 28 == 0)) {
+                    if (!isStuck) {
                         switch (activeMove) {
                             case RIGHT:
                                 position.x++;
@@ -90,44 +93,61 @@ public class Pacman extends Agent implements KeyListener{
                                 position.y++;
                                 break;
                         }
-                        //send update message
-                        parentBoard.dispatchEvent(new ActionEvent(this,Messeges.UPDATE,null));
+                        // send update message
+                        parentBoard.dispatchEvent(new ActionEvent(this, Messeges.UPDATE, null));
                     }
                     isStuck = true;
                     animTimer.stop();
 
-                    if(todoMove != moveType.NONE && isPossibleMove(todoMove) ) {
+                    //****************************************************************
+                    // ACRESCENTAR CODIGO AI PACMAN AQUI
+                    if (!singleplayerGame) {
+                        ArrayList<moveType> possibleMoves = new ArrayList<moveType>();
+                        for (moveType mt : moveType.values()) {
+                            if (isPossibleMove(mt))
+                                possibleMoves.add(mt);
+                        }
+                        int moveIndex = rnd.nextInt(possibleMoves.size());
+                        todoMove = possibleMoves.get(moveIndex);
+                    }
+                    //*****************************************************************
+                    if (todoMove != moveType.NONE && isPossibleMove(todoMove)) {
                         activeMove = todoMove;
                         todoMove = moveType.NONE;
                     }
-                }else{
+
+                } else {
                     isStuck = false;
                     animTimer.start();
                 }
 
-                switch(activeMove){
+                switch (activeMove) {
                     case RIGHT:
-                        if((pixelPosition.x >= (parentBoard.m_x-1) * 28)&&parentBoard.isCustom){
+                        if ((pixelPosition.x >= (parentBoard.m_x - 1) * 28) && parentBoard.isCustom) {
                             return;
                         }
-                        /*if((logicalPosition.x+1 < parentBoard.m_x) && (parentBoard.map[logicalPosition.x+1][logicalPosition.y]>0)){
-                            return;
-                        }*/
-                        if(position.x >= 0 && position.x < parentBoard.m_x-1 && position.y >= 0 && position.y < parentBoard.m_y-1 ) {
+                        /*
+                         * if((position.x+1 < parentBoard.m_x) &&
+                         * (parentBoard.map[position.x+1][position.y]>0)){ return; }
+                         */
+                        if (position.x >= 0 && position.x < parentBoard.m_x - 1 && position.y >= 0
+                                && position.y < parentBoard.m_y - 1) {
                             if (parentBoard.map[position.x + 1][position.y] > 0) {
                                 return;
                             }
                         }
-                        pixelPosition.x ++;
+                        pixelPosition.x++;
                         break;
                     case LEFT:
-                        if((pixelPosition.x <= 0)&&parentBoard.isCustom){
+                        if ((pixelPosition.x <= 0) && parentBoard.isCustom) {
                             return;
                         }
-                        /*if((logicalPosition.x-1 >= 0) && (parentBoard.map[logicalPosition.x-1][logicalPosition.y]>0)){
-                            return;
-                        }*/
-                        if(position.x > 0 && position.x < parentBoard.m_x-1 && position.y >= 0 && position.y < parentBoard.m_y-1 ) {
+                        /*
+                         * if((position.x-1 >= 0) &&
+                         * (parentBoard.map[position.x-1][position.y]>0)){ return; }
+                         */
+                        if (position.x > 0 && position.x < parentBoard.m_x - 1 && position.y >= 0
+                                && position.y < parentBoard.m_y - 1) {
                             if (parentBoard.map[position.x - 1][position.y] > 0) {
                                 return;
                             }
@@ -135,48 +155,53 @@ public class Pacman extends Agent implements KeyListener{
                         pixelPosition.x--;
                         break;
                     case UP:
-                        if((pixelPosition.y <= 0)&&parentBoard.isCustom){
+                        if ((pixelPosition.y <= 0) && parentBoard.isCustom) {
                             return;
                         }
-                        /*if((logicalPosition.y-1 >= 0) && (parentBoard.map[logicalPosition.x][logicalPosition.y-1]>0)){
-                            return;
-                        }*/
-                        if(position.x >= 0 && position.x < parentBoard.m_x-1 && position.y >= 0 && position.y < parentBoard.m_y-1 ) {
-                            if(parentBoard.map[position.x][position.y-1]>0){
+                        /*
+                         * if((position.y-1 >= 0) &&
+                         * (parentBoard.map[position.x][position.y-1]>0)){ return; }
+                         */
+                        if (position.x >= 0 && position.x < parentBoard.m_x - 1 && position.y >= 0
+                                && position.y < parentBoard.m_y - 1) {
+                            if (parentBoard.map[position.x][position.y - 1] > 0) {
                                 return;
                             }
                         }
                         pixelPosition.y--;
                         break;
                     case DOWN:
-                        if((pixelPosition.y >= (parentBoard.m_y-1) * 28)&&parentBoard.isCustom){
+                        if ((pixelPosition.y >= (parentBoard.m_y - 1) * 28) && parentBoard.isCustom) {
                             return;
                         }
-                        /*if((logicalPosition.y+1 < parentBoard.m_y) && (parentBoard.map[logicalPosition.x][logicalPosition.y+1]>0)){
-                            return;
-                        }*/
-                        if(position.x >= 0 && position.x < parentBoard.m_x-1 && position.y >= 0 && position.y < parentBoard.m_y-1 ) {
-                            if(parentBoard.map[position.x][position.y+1]>0){
+                        /*
+                         * if((position.y+1 < parentBoard.m_y) &&
+                         * (parentBoard.map[position.x][position.y+1]>0)){ return; }
+                         */
+                        if (position.x >= 0 && position.x < parentBoard.m_x - 1 && position.y >= 0
+                                && position.y < parentBoard.m_y - 1) {
+                            if (parentBoard.map[position.x][position.y + 1] > 0) {
                                 return;
                             }
                         }
-                        pixelPosition.y ++;
+                        pixelPosition.y++;
                         break;
                 }
 
-                //send Messege to com.aasma2020.pacman.PacBoard to check collision
-                parentBoard.dispatchEvent(new ActionEvent(this,Messeges.COLTEST,null));
+                // send Messege to PacBoard to check collision
+                parentBoard.dispatchEvent(new ActionEvent(this, Messeges.COLTEST, null));
 
             }
         };
-        moveTimer = new Timer(9,moveAL);
+        moveTimer = new Timer(9, moveAL);
         moveTimer.start();
 
     }
 
-    public boolean isPossibleMove(moveType move){
-        if(position.x >= 0 && position.x < parentBoard.m_x-1 && position.y >= 0 && position.y < parentBoard.m_y-1 ) {
-            switch(move){
+    public boolean isPossibleMove(moveType move) {
+        if (position.x >= 0 && position.x < parentBoard.m_x - 1 && position.y >= 0
+                && position.y < parentBoard.m_y - 1) {
+            switch (move) {
                 case RIGHT:
                     return !(parentBoard.map[position.x + 1][position.y] > 0);
                 case LEFT:
@@ -184,47 +209,49 @@ public class Pacman extends Agent implements KeyListener{
                 case UP:
                     return !(parentBoard.map[position.x][position.y - 1] > 0);
                 case DOWN:
-                    return !(parentBoard.map[position.x][position.y+1] > 0);
+                    return !(parentBoard.map[position.x][position.y + 1] > 0);
             }
         }
         return false;
     }
 
-    public Image getPacmanImage(){
+    public Image getPacmanImage() {
         return pac[activeImage];
     }
 
     @Override
-    public void keyReleased(KeyEvent ke){
+    public void keyReleased(KeyEvent ke) {
         //
     }
 
     @Override
-    public void keyTyped(KeyEvent ke){
+    public void keyTyped(KeyEvent ke) {
         //
     }
 
-    //Handle Arrow Keys
+    // Handle Arrow Keys
     @Override
-    public void keyPressed(KeyEvent ke){
-        switch(ke.getKeyCode()){
-            case 37:
-                todoMove = moveType.LEFT;
-                break;
-            case 38:
-                todoMove = moveType.UP;
-                break;
-            case 39:
-                todoMove = moveType.RIGHT;
-                break;
-            case 40:
-                todoMove = moveType.DOWN;
-                break;
-            case 82:
-                parentBoard.dispatchEvent(new ActionEvent(this,Messeges.RESET,null));
-                break;
+    public void keyPressed(KeyEvent ke) {
+        if (singleplayerGame) {
+            switch (ke.getKeyCode()) {
+                case 37:
+                    todoMove = moveType.LEFT;
+                    break;
+                case 38:
+                    todoMove = moveType.UP;
+                    break;
+                case 39:
+                    todoMove = moveType.RIGHT;
+                    break;
+                case 40:
+                    todoMove = moveType.DOWN;
+                    break;
+                case 82:
+                    parentBoard.dispatchEvent(new ActionEvent(this, Messeges.RESET, null));
+                    break;
+            }
         }
-        //System.out.println(ke.getKeyCode());
+        // System.out.println(ke.getKeyCode());
     }
 
 
