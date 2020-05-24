@@ -1,16 +1,16 @@
 package com.aasma2020.pacman.communication;
 
-import java.awt.*;
+import com.aasma2020.pacman.Position;
 
 public class Report {
 
-    private Point pacmanPosition;
+    private Position pacmanPosition;
 
-    public Point getPacmanPosition() {
+    public Position getPacmanPosition() {
         return pacmanPosition;
     }
 
-    public void setPacmanPosition(Point pacmanPosition) {
+    public void setPacmanPosition(Position pacmanPosition) {
         this.pacmanPosition = pacmanPosition;
     }
 

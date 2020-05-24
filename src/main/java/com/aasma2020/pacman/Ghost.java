@@ -76,7 +76,7 @@ public abstract class Ghost extends Agent implements SocietyAgent {
 
     protected PacBoard parentBoard;
 
-    private Point pacmanPosition;
+    private Position pacmanPosition;
 
     public Ghost (int x, int y,PacBoard pb,int ghostDelay) {
 
@@ -367,10 +367,6 @@ public abstract class Ghost extends Agent implements SocietyAgent {
         moveTimer.setDelay(ghostNormalDelay);
     }
 
-    public void setLastPacmanPosition(Point pacmanPosition) {
-        this.pacmanPosition = pacmanPosition;
-    }
-
     @Override
     public void sendReport(SocietyAgent agent) {
         Report report = new Report();
@@ -380,20 +376,27 @@ public abstract class Ghost extends Agent implements SocietyAgent {
 
     @Override
     public void receiveReport(Report report) {
-        this.pacmanPosition = report.getPacmanPosition();
+        if(pacmanPosition == null || pacmanPosition.getTimestamp() < report.getPacmanPosition().getTimestamp())
+            this.pacmanPosition = report.getPacmanPosition();
     }
 
     @Override
     public void decideAndAct(MapAreaInfo info) {
 
         if(info.getPacman() != null) {
+            this.pacmanPosition = info.getPacman();
             System.out.println("---- " + this.getClass().getSimpleName() + " ----");
             System.out.println("Found Pacman!");
         }
-      /* for(Ghost ghost : info.getGhosts().values()) {
 
+        for(Ghost ghost : info.getGhosts().values()) {
+            if(this.pacmanPosition != null) {
+                Report report = new Report();
+                report.setPacmanPosition(this.pacmanPosition);
+                ghost.receiveReport(report);
+            }
             System.out.println("Found a " + ghost.getClass().getSimpleName() + " ghost...");
         }
-*/
+
     }
 }

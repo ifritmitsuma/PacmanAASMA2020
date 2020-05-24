@@ -2,6 +2,7 @@ package com.aasma2020.pacman.communication;
 
 import com.aasma2020.pacman.Food;
 import com.aasma2020.pacman.Ghost;
+import com.aasma2020.pacman.Position;
 import com.aasma2020.pacman.PowerUpFood;
 
 import java.awt.*;
@@ -15,7 +16,7 @@ public class MapAreaInfo {
 
     private double radius;
 
-    private Point pacman;
+    private Position pacman;
 
     private SortedMap<Point, Ghost> ghosts;
 
@@ -41,7 +42,7 @@ public class MapAreaInfo {
         });
     }
 
-    public Point getPacman() {
+    public Position getPacman() {
         return pacman;
     }
 
@@ -49,7 +50,7 @@ public class MapAreaInfo {
         if(distance(pacman) > radius) {
             return;
         }
-        this.pacman = pacman;
+        this.pacman = new Position(pacman);
     }
 
     public SortedMap<Point, Ghost> getGhosts() {
