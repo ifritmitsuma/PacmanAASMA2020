@@ -63,7 +63,7 @@ public class PacBoard extends JPanel implements KeyListener {
 
     int areaVisionRadius = 3;
 
-    boolean soundMuted = false;
+    boolean soundMuted = true;
 
     public PacBoard(JLabel scoreboard,MapData md,PacWindow pw, boolean singleplayerGame){
     	this.singleplayerGame = singleplayerGame;
@@ -167,9 +167,13 @@ public class PacBoard extends JPanel implements KeyListener {
         redrawTimer. start();
 
         //com.aasma2020.pacman.SoundPlayer.play("pacman_start.wav");
+        SoundPlayer.muteToggle(soundMuted);
         siren = new LoopPlayer("siren.wav");
         pac6 = new LoopPlayer("pac6.wav");
         siren.start();
+        if(soundMuted) {
+            siren.muteSound();
+        }
     }
 
     private void collisionTest(){

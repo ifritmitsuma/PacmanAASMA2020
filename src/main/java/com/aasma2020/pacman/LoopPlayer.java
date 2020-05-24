@@ -48,7 +48,7 @@ public class LoopPlayer {
             System.err.println(e.getMessage());
         }
     }
-    
+
     public void muteSound() {
         try {
             clip.stop();
