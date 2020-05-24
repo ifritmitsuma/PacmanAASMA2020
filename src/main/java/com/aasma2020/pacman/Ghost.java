@@ -142,7 +142,7 @@ public abstract class Ghost extends SocietyAgent {
                                 position.y++;
                                 break;
                         }
-                        dispatchEvent(Messeges.AREATEST);
+                        parentBoard.dispatchEvent(new ActionEvent(Ghost.this, Messeges.AREATEST, null));
                     }
 
 
@@ -200,8 +200,8 @@ public abstract class Ghost extends SocietyAgent {
                         break;
                 }
 
-                dispatchEvent(Messeges.AREATEST);
-                dispatchEvent(Messeges.COLTEST);
+                parentBoard.dispatchEvent(new ActionEvent(Ghost.this, Messeges.AREATEST, null));
+                parentBoard.dispatchEvent(new ActionEvent(Ghost.this, Messeges.COLTEST, null));
             }
         };
         moveTimer = new Timer(ghostDelay,moveAL);
@@ -259,8 +259,6 @@ public abstract class Ghost extends SocietyAgent {
         activeMove = getMoveAI();
 
     }
-
-    protected abstract void dispatchEvent(int message);
 
     //load Images from Resource
     public abstract void loadImages();
@@ -375,10 +373,11 @@ public abstract class Ghost extends SocietyAgent {
     @Override
     public void decideAndAct(MapAreaInfo info) {
 
+        //System.out.println("---- " + this.getClass().getSimpleName() + " ----");
+
         if(info.getPacman() != null) {
             this.pacmanPosition = info.getPacman();
-            System.out.println("---- " + this.getClass().getSimpleName() + " ----");
-            System.out.println("Found Pacman!");
+            //System.out.println("Found Pacman!");
         }
 
         for(Ghost ghost : info.getGhosts().values()) {
@@ -389,8 +388,9 @@ public abstract class Ghost extends SocietyAgent {
                 report.setMoveIntention(this.activeMove);
                 ghost.receiveReport(this, report);
             }
-            System.out.println("Found a " + ghost.getClass().getSimpleName() + " ghost...");
+            //System.out.println("Found a " + ghost.getClass().getSimpleName() + " ghost...");
         }
 
     }
+
 }

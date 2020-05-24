@@ -93,7 +93,8 @@ public class Pacman extends Agent implements KeyListener{
                                 break;
                         }
                         // send update message
-                        parentBoard.dispatchEvent(new ActionEvent(this, Messeges.UPDATE, null));
+                        parentBoard.dispatchEvent(new ActionEvent(Pacman.this, Messeges.AREATEST,null));
+                        parentBoard.dispatchEvent(new ActionEvent(Pacman.this, Messeges.UPDATE, null));
                     }
                     isStuck = true;
                     animTimer.stop();
@@ -249,7 +250,6 @@ public class Pacman extends Agent implements KeyListener{
         }
         // System.out.println(ke.getKeyCode());
     }
-
 
     @Override
     public void decideAndAct(MapAreaInfo info) {

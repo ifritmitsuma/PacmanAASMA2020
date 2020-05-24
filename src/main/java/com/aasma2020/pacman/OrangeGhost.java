@@ -15,11 +15,6 @@ public class OrangeGhost extends Ghost {
     }
 
     @Override
-    protected void dispatchEvent(int message) {
-        parentBoard.dispatchEvent(new ActionEvent(this,message,null));
-    }
-
-    @Override
     public void loadImages(){
         ghostR = new Image[2];
         ghostL = new Image[2];
