@@ -2,8 +2,8 @@ package com.aasma2020.pacman.communication;
 
 import com.aasma2020.pacman.Food;
 import com.aasma2020.pacman.Ghost;
-import com.aasma2020.pacman.board.Position;
 import com.aasma2020.pacman.PowerUpFood;
+import com.aasma2020.pacman.board.Position;
 
 import java.awt.*;
 import java.util.Map;

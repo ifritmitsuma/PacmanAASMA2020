@@ -1,7 +1,5 @@
 package com.aasma2020.pacman;
 
-import com.sun.xml.internal.ws.api.ResourceLoader;
-
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.event.ActionEvent;

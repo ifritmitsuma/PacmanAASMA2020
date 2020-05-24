@@ -1,6 +1,5 @@
 package com.aasma2020.pacman;
 
-import com.aasma2020.pacman.board.BoardElement;
 import com.aasma2020.pacman.communication.Agent;
 import com.aasma2020.pacman.communication.MapAreaInfo;
 

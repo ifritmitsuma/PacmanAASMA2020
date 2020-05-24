@@ -1,7 +1,6 @@
 package com.aasma2020.pacman;
 
 import com.aasma2020.pacman.board.Position;
-import com.aasma2020.pacman.communication.Agent;
 import com.aasma2020.pacman.communication.MapAreaInfo;
 import com.aasma2020.pacman.communication.Report;
 import com.aasma2020.pacman.communication.SocietyAgent;
