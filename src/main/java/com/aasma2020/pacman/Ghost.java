@@ -75,7 +75,13 @@ public abstract class Ghost extends SocietyAgent {
 
     protected PacBoard parentBoard;
 
-    private Position pacmanPosition;
+    protected Position pacmanPosition;
+
+    protected BFSFinder bfs;
+
+    moveType lastCMove;
+
+    moveType pendMove = moveType.UP;
 
     public Ghost (int x, int y,PacBoard pb,int ghostDelay) {
 
@@ -202,6 +208,10 @@ public abstract class Ghost extends SocietyAgent {
 
                 parentBoard.dispatchEvent(new ActionEvent(Ghost.this, Messeges.AREATEST, null));
                 parentBoard.dispatchEvent(new ActionEvent(Ghost.this, Messeges.COLTEST, null));
+
+                if(pacmanPosition != null && pacmanPosition.isValid() && pacmanPosition.getTimestamp() + 10000 < System.currentTimeMillis()) {
+                    pacmanPosition.setValid(false);
+                }
             }
         };
         moveTimer = new Timer(ghostDelay,moveAL);
@@ -366,8 +376,9 @@ public abstract class Ghost extends SocietyAgent {
 
     @Override
     public void receiveReport(SocietyAgent agent, Report report) {
-        if(pacmanPosition == null || pacmanPosition.getTimestamp() < report.getPacmanPosition().getTimestamp())
+        if(pacmanPosition == null || pacmanPosition.getTimestamp() < report.getPacmanPosition().getTimestamp()) {
             this.pacmanPosition = report.getPacmanPosition();
+        }
     }
 
     @Override
@@ -377,11 +388,12 @@ public abstract class Ghost extends SocietyAgent {
 
         if(info.getPacman() != null) {
             this.pacmanPosition = info.getPacman();
+            this.pacmanPosition.setValid(true);
             //System.out.println("Found Pacman!");
         }
 
         for(Ghost ghost : info.getGhosts().values()) {
-            if(this.pacmanPosition != null) {
+            if(this.pacmanPosition != null && this.pacmanPosition.isValid()) {
                 Report report = new Report();
                 report.setPacmanPosition(this.pacmanPosition);
                 // Right now, we just send the current active move. Must change to newly calculated decision

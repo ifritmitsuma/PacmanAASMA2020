@@ -5,10 +5,11 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
 
-public class OrangeGhost extends Ghost {
+public class OrangeGhost extends RandomGhost {
 
     public OrangeGhost(int x, int y, PacBoard pb){
         super(x,y,pb,9);
@@ -35,30 +36,4 @@ public class OrangeGhost extends Ghost {
         }
     }
 
-    moveType lastCMove;
-    moveType pendMove = moveType.UP;
-
-    @Override
-    public moveType getMoveAI(){
-        if(isPending){
-            if(isStuck){
-                if(pendMove == moveType.UP){
-                    pendMove = moveType.DOWN;
-                }else if(pendMove == moveType.DOWN){
-                    pendMove = moveType.UP;
-                }
-                return pendMove;
-            }else{
-                return pendMove;
-            }
-        }
-        if(isDead) {
-            return baseReturner.getMove(position.x, position.y, parentBoard.ghostBase.x,parentBoard.ghostBase.y);
-        }else {
-            ArrayList<moveType> pm = getPossibleMoves();
-            int i = ThreadLocalRandom.current().nextInt(pm.size());
-            lastCMove = pm.get(i);
-            return lastCMove;
-        }
-    }
 }
