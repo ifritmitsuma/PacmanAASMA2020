@@ -1,9 +1,9 @@
 package com.aasma2020.pacman.communication;
 
-public interface SocietyAgent {
+import com.aasma2020.pacman.board.BoardElement;
 
-    public void sendReport(SocietyAgent agent);
+public abstract class SocietyAgent extends Agent {
 
-    public void receiveReport(Report report);
+    public abstract void receiveReport(SocietyAgent agent, Report report);
 
 }

@@ -1,6 +1,6 @@
 package com.aasma2020.pacman;
 
-import com.aasma2020.pacman.board.BoardElement;
+import com.aasma2020.pacman.board.Position;
 import com.aasma2020.pacman.communication.Agent;
 import com.aasma2020.pacman.communication.MapAreaInfo;
 import com.aasma2020.pacman.communication.Report;
@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.concurrent.ThreadLocalRandom;
 
 
-public abstract class Ghost extends Agent implements SocietyAgent {
+public abstract class Ghost extends SocietyAgent {
     //Anim Vars
     Timer animTimer;
     ActionListener animAL;
@@ -368,14 +368,7 @@ public abstract class Ghost extends Agent implements SocietyAgent {
     }
 
     @Override
-    public void sendReport(SocietyAgent agent) {
-        Report report = new Report();
-        report.setPacmanPosition(this.pacmanPosition);
-        agent.receiveReport(report);
-    }
-
-    @Override
-    public void receiveReport(Report report) {
+    public void receiveReport(SocietyAgent agent, Report report) {
         if(pacmanPosition == null || pacmanPosition.getTimestamp() < report.getPacmanPosition().getTimestamp())
             this.pacmanPosition = report.getPacmanPosition();
     }
@@ -393,7 +386,9 @@ public abstract class Ghost extends Agent implements SocietyAgent {
             if(this.pacmanPosition != null) {
                 Report report = new Report();
                 report.setPacmanPosition(this.pacmanPosition);
-                ghost.receiveReport(report);
+                // Right now, we just send the current active move. Must change to newly calculated decision
+                report.setMoveIntention(this.activeMove);
+                ghost.receiveReport(this, report);
             }
             System.out.println("Found a " + ghost.getClass().getSimpleName() + " ghost...");
         }
