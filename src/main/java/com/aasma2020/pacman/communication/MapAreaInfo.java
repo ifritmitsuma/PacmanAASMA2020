@@ -31,13 +31,13 @@ public class MapAreaInfo {
         this.center = center;
         this.radius = radius;
         ghosts = new TreeMap<>((Point o1, Point o2) -> {
-            return (int) (distance(o1) * 1000 - distance(o2) * 1000);
+            return (int) (distance(o1) - distance(o2));
         });
         powerUpFood = new TreeMap<>((Point o1, Point o2) -> {
-            return (int) (distance(o1) * 1000 - distance(o2) * 1000);
+            return (int) (distance(o1) - distance(o2));
         });
         food = new TreeMap<>((Point o1, Point o2) -> {
-            return (int) (distance(o1) * 1000 - distance(o2) * 1000);
+            return (int) (distance(o1) - distance(o2));
         });
     }
 
@@ -46,7 +46,7 @@ public class MapAreaInfo {
     }
 
     public void setPacman(Point pacman) {
-        if(distance(pacman) > 5) {
+        if(distance(pacman) > radius) {
             return;
         }
         this.pacman = pacman;
@@ -57,6 +57,9 @@ public class MapAreaInfo {
     }
 
     public void addGhost(Point position, Ghost ghost) {
+        if(distance(position) > radius) {
+            return;
+        }
         ghosts.put(position, ghost);
         validateClosest();
     }
@@ -71,6 +74,9 @@ public class MapAreaInfo {
     }
 
     public void addPowerUpFood(Point position, PowerUpFood powerUp) {
+        if(distance(position) > radius) {
+            return;
+        }
         powerUpFood.put(position, powerUp);
         validateClosest();
     }
@@ -85,6 +91,9 @@ public class MapAreaInfo {
     }
 
     public void addFood(Point position, Food fd) {
+        if(distance(position) > radius) {
+            return;
+        }
         food.put(position, fd);
         validateClosest();
     }

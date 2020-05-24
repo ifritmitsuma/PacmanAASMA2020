@@ -57,6 +57,8 @@ public class PacBoard extends JPanel{
     private Timer winTimer;
     protected int winSeconds = 3;
 
+    int areaVisionRadius = 3;
+
     public PacBoard(JLabel scoreboard,MapData md,PacWindow pw, boolean singleplayerGame){
     	this.singleplayerGame = singleplayerGame;
         this.scoreboard = scoreboard;
@@ -352,10 +354,10 @@ public class PacBoard extends JPanel{
         for(Ghost gh : ghosts){
             g.drawImage(gh.getGhostImage(),10+gh.pixelPosition.x,10+gh.pixelPosition.y,null);
 
-            int radius = gh.getGhostImage().getWidth(null);
-
-            g.setColor(new Color(255,255,255,128));
-            g.fillOval(gh.pixelPosition.x - radius - 18, gh.pixelPosition.y - radius - 14, 5 * radius, 5 * radius);
+            // Draw visibility area circle
+            int imageSize = gh.getGhostImage().getWidth(null) * 2;
+            g.setColor(new Color(255,255,255,32));
+            g.fillOval(gh.pixelPosition.x - imageSize, gh.pixelPosition.y - imageSize, areaVisionRadius * imageSize, areaVisionRadius * imageSize);
         }
 
         if(clearScore){
@@ -437,12 +439,7 @@ public class PacBoard extends JPanel{
 
     private void checkArea(Agent agent) {
 
-        Point center = new Point();
-
-        center.x = agent.getPosition().x - 5 - 14;
-        center.y = agent.getPosition().y - 5 - 14;
-
-        MapAreaInfo info = new MapAreaInfo(center, 5);
+        MapAreaInfo info = new MapAreaInfo(agent.getPosition(), areaVisionRadius);
 
         if(!(agent instanceof Pacman)) {
             info.setPacman(pacman.getPosition());
