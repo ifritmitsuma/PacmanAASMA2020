@@ -4,10 +4,10 @@ import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.concurrent.ThreadLocalRandom;
 
-public class RedGhost extends Ghost {
-
-    BFSFinder bfs;
+public class RedGhost extends WandererGhost {
 
     public RedGhost(int x, int y,PacBoard pb){
         super(x,y,pb,12);
@@ -31,32 +31,6 @@ public class RedGhost extends Ghost {
             ghostD[1] = ImageIO.read(loader.getResource("images/ghost/red/7.png"));
         }catch(IOException e){
             System.err.println("Cannot Read Images !");
-        }
-    }
-
-    moveType pendMove = moveType.UP;
-
-    //find closest path using BFS
-    @Override
-    public moveType getMoveAI(){
-        if(isPending){
-            if(isStuck){
-                if(pendMove == moveType.UP){
-                    pendMove = moveType.DOWN;
-                }else if(pendMove == moveType.DOWN){
-                    pendMove = moveType.UP;
-                }
-                return pendMove;
-            }else{
-                return pendMove;
-            }
-        }
-        if(bfs==null)
-            bfs = new BFSFinder(parentBoard);
-        if(isDead) {
-            return baseReturner.getMove(position.x, position.y, parentBoard.ghostBase.x,parentBoard.ghostBase.y);
-        }else{
-            return bfs.getMove(position.x, position.y,parentBoard.pacman.getPosition().x,parentBoard.pacman.getPosition().y);
         }
     }
 

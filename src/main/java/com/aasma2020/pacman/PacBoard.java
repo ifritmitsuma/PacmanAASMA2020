@@ -173,6 +173,8 @@ public class PacBoard extends JPanel implements KeyListener {
         siren.start();
         if(soundMuted) {
             siren.muteSound();
+            siren.muteToggle(true);
+            pac6.muteToggle(true);
         }
     }
 

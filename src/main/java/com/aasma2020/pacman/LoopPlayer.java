@@ -30,12 +30,16 @@ public class LoopPlayer {
 
     public void start(){
         playing = true;
-        unmuteSound();
+        if(!mute) {
+            unmuteSound();
+        }
     }
 
     public void stop(){
         playing = false;
-        muteSound();
+        if(mute) {
+            muteSound();
+        }
     }
 
     public void unmuteSound() {

@@ -6,6 +6,8 @@ public class Position extends Point {
 
     private long timestamp;
 
+    private boolean valid;
+
     public Position(Point pacman) {
         setLocation(pacman);
         timestamp = System.currentTimeMillis();
@@ -17,6 +19,14 @@ public class Position extends Point {
 
     public void setTimestamp(long timestamp) {
         this.timestamp = timestamp;
+    }
+
+    public boolean isValid() {
+        return valid;
+    }
+
+    public void setValid(boolean valid) {
+        this.valid = valid;
     }
 
 }
