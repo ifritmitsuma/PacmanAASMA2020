@@ -8,9 +8,11 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.util.ArrayList;
 
-public class PacBoard extends JPanel{
+public class PacBoard extends JPanel implements KeyListener {
 
 
     Timer redrawTimer;
@@ -24,6 +26,8 @@ public class PacBoard extends JPanel{
 
     Image goImage;
     Image vicImage;
+
+    Image muteImage;
 
     Pacman pacman;
     ArrayList<Food> foods;
@@ -58,6 +62,8 @@ public class PacBoard extends JPanel{
     protected int winSeconds = 3;
 
     int areaVisionRadius = 3;
+
+    boolean soundMuted = false;
 
     public PacBoard(JLabel scoreboard,MapData md,PacWindow pw, boolean singleplayerGame){
     	this.singleplayerGame = singleplayerGame;
@@ -146,6 +152,10 @@ public class PacBoard extends JPanel{
             //pfoodImage = ImageIO.read(loader.getResource("/images/pfood.png"));
         }catch(Exception e){}
 
+        try{
+            muteImage = ImageIO.read(loader.getResource("images/mute.png"));
+        }catch(Exception e){}
+
 
         redrawAL = new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
@@ -171,15 +181,14 @@ public class PacBoard extends JPanel{
             if(pr.intersects(gr)){
                 if(!g.isDead()) {
                     if (!g.isWeak()) {
-                        g.setLastPacmanPosition(g.getPosition());
                         //Game Over
-                        /*siren.stop();
+                        siren.stop();
                         com.aasma2020.pacman.SoundPlayer.play("pacman_lose.wav");
                         pacman.moveTimer.stop();
                         pacman.animTimer.stop();
                         g.moveTimer.stop();
                         isGameOver = true;
-                        scoreboard.setText("    Press R to try again !");*/
+                        scoreboard.setText("    Press R to try again !");
                         //scoreboard.setForeground(Color.red);
                         break;
                     } else {
@@ -409,6 +418,10 @@ public class PacBoard extends JPanel{
             }
         }
 
+        // Draw mute icon
+        if(soundMuted) {
+            g.drawImage(muteImage, this.getSize().width - muteImage.getWidth(null) * 2, muteImage.getHeight(null), null);
+        }
 
     }
 
@@ -426,10 +439,6 @@ public class PacBoard extends JPanel{
                 break;
             case Messeges.AREATEST:
                 checkArea((Agent) ae.getSource());
-                break;
-            case Messeges.RESET:
-                if(isGameOver)
-                    restart();
                 break;
             default:
                 super.processEvent(ae);
@@ -521,6 +530,28 @@ public class PacBoard extends JPanel{
     }
 
 
+    @Override
+    public void keyTyped(KeyEvent e) {
+        // Not needed
+    }
 
+    @Override
+    public void keyReleased(KeyEvent e) {
+        // Not needed
+    }
 
+    @Override
+    public void keyPressed(KeyEvent e) {
+
+        if(e.getKeyChar() == 'r' && isGameOver) {
+            restart();
+        }
+        if(e.getKeyChar() == 'm') {
+            soundMuted = !soundMuted;
+            SoundPlayer.muteToggle(soundMuted);
+            siren.muteToggle(soundMuted);
+            pac6.muteToggle(soundMuted);
+        }
+
+    }
 }

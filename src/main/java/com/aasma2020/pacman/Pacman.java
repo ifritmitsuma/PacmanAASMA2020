@@ -246,9 +246,6 @@ public class Pacman extends Agent implements KeyListener{
                 case 40:
                     todoMove = moveType.DOWN;
                     break;
-                case 82:
-                    parentBoard.dispatchEvent(new ActionEvent(this, Messeges.RESET, null));
-                    break;
             }
         }
         // System.out.println(ke.getKeyCode());

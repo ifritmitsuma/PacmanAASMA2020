@@ -12,11 +12,16 @@ public class LoopPlayer {
     Clip clip;
     AudioInputStream inputStream;
 
+    private ClassLoader loader = Thread.currentThread().getContextClassLoader();
+
+    private boolean mute = false;
+    private boolean playing = false;
+
     public LoopPlayer(String soundname){
         try {
             clip = AudioSystem.getClip();
             inputStream = AudioSystem.getAudioInputStream(
-                    Main.class.getResourceAsStream("sounds/" + soundname));
+                    loader.getResourceAsStream("sounds/" + soundname));
             clip.open(inputStream);
         } catch (Exception e) {
             System.err.println(e.getMessage());
@@ -24,6 +29,16 @@ public class LoopPlayer {
     }
 
     public void start(){
+        playing = true;
+        unmuteSound();
+    }
+
+    public void stop(){
+        playing = false;
+        muteSound();
+    }
+
+    public void unmuteSound() {
         try {
             if(clip.isRunning()) {
                 clip.stop();
@@ -33,12 +48,30 @@ public class LoopPlayer {
             System.err.println(e.getMessage());
         }
     }
-
-    public void stop(){
+    
+    public void muteSound() {
         try {
             clip.stop();
         } catch (Exception e) {
             System.err.println(e.getMessage());
+        }
+    }
+
+    public void muteToggle() {
+        mute = !mute;
+        if(playing && !this.mute) {
+            unmuteSound();
+        } else {
+            muteSound();
+        }
+    }
+
+    public void muteToggle(Boolean state) {
+        mute = state;
+        if(playing && !this.mute) {
+            unmuteSound();
+        } else {
+            muteSound();
         }
     }
 }

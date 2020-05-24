@@ -5,6 +5,9 @@ import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.util.Scanner;
 
 public class PacWindow extends JFrame {
@@ -57,6 +60,14 @@ public class PacWindow extends JFrame {
         this.getContentPane().add(pb);
 
          */
+        ActionListener mute = new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+            }
+
+        };
         setVisible(true);
     }
 
@@ -274,6 +285,7 @@ public class PacWindow extends JFrame {
         PacBoard pb = new PacBoard(scoreboard,map,this,singleplayerGame);
 
         pb.setBorder(new CompoundBorder(new EmptyBorder(10,10,10,10),new LineBorder(Color.BLUE)));
+        addKeyListener(pb);
         addKeyListener(pb.pacman);
 
         this.getContentPane().add(scoreboard,BorderLayout.SOUTH);
