@@ -269,12 +269,38 @@ public class Pacman extends Agent implements KeyListener {
 	}
 	
 	public void chooseMoveGivenGhostPosition(Ghost ghost, ArrayList<moveType> possibleMoves) {
+
+		moveType move = moveType.NONE;
+
 		double ghostX = ghost.getPosition().getX();
 		double ghostY = ghost.getPosition().getY();
-		
+
+		if(((ghost.isWeak() && position.x <= ghostX) || (!ghost.isWeak() && position.x >= ghostX))
+				&& possibleMoves.contains(moveType.RIGHT)) {
+			move = moveType.RIGHT;
+		}
+		if(((ghost.isWeak() && position.x >= ghostX) || (!ghost.isWeak() && position.x <= ghostX))
+				&& possibleMoves.contains(moveType.LEFT)) {
+			move = moveType.LEFT;
+		}
+		if(((ghost.isWeak() && position.y >= ghostY) || (!ghost.isWeak() && position.y <= ghostY))
+				&& possibleMoves.contains(moveType.UP)) {
+			move = moveType.UP;
+		}
+		if(((ghost.isWeak() && position.y <= ghostY) || (!ghost.isWeak() && position.y >= ghostY))
+				&& possibleMoves.contains(moveType.DOWN)) {
+			move = moveType.DOWN;
+		}
+
+		if(move == moveType.NONE) {
+			randomMove(possibleMoves);
+		} else {
+			todoMove = move;
+		}
+
 //		System.out.println("ghost: " + ghostX + " " + ghostY);
 //		System.out.println("player: " + position.x + " " + position.y);
-		if (position.x > ghostX) {
+		/*if (position.x > ghostX) {
 			if (possibleMoves.contains(moveType.RIGHT)) {
 				todoMove = moveType.RIGHT;
 			} else {
@@ -310,7 +336,7 @@ public class Pacman extends Agent implements KeyListener {
 					}
 				}
 			}
-		}
+		}*/
 	}
 	
 	public void randomMove(ArrayList<moveType> possibleMoves) {
