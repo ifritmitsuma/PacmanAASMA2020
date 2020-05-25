@@ -1,4 +1,4 @@
-package com.aasma2020.pacman;
+package com.aasma2020.pacman.board;
 
 public enum moveType{
     NONE,
