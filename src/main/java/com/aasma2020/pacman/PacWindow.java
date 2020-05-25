@@ -7,6 +7,8 @@ import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.util.Scanner;
 
 public class PacWindow extends JFrame {
@@ -69,7 +71,19 @@ public class PacWindow extends JFrame {
             }
 
         };
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        addWindowListener(new WindowAdapter() {
+
+            @Override
+            public void windowClosing(WindowEvent e) {
+                super.windowClosing(e);
+                Log.close();
+                Statistic.close();
+            }
+
+        });
         setVisible(true);
+
     }
 
     public PacWindow(MapData md){
@@ -278,6 +292,12 @@ public class PacWindow extends JFrame {
             newLevel();
             return;
         }
+
+        if(level == 0) {
+            Log.log("\nNew game starting!");
+        }
+
+        Log.log("Level " + (level + 1) + "... GO!");
 
         this.getContentPane().removeAll();
         this.getContentPane().revalidate();

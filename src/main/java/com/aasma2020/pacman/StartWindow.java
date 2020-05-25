@@ -57,6 +57,7 @@ public class StartWindow extends JFrame {
         aiButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                Statistic.initialize();
                 PacWindow pw = new PacWindow(false);
                 dispose();
             }
@@ -78,4 +79,5 @@ public class StartWindow extends JFrame {
 
         setVisible(true);
     }
+
 }

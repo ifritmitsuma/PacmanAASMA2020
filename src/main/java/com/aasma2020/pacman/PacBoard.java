@@ -65,6 +65,8 @@ public class PacBoard extends JPanel implements KeyListener {
 
     boolean soundMuted = true;
 
+    long startTime = System.currentTimeMillis();
+
     public PacBoard(JLabel scoreboard,MapData md,PacWindow pw, boolean singleplayerGame, boolean soundMuted){
     	this.singleplayerGame = singleplayerGame;
         this.scoreboard = scoreboard;
@@ -188,6 +190,9 @@ public class PacBoard extends JPanel implements KeyListener {
             if(pr.intersects(gr)){
                 if(!g.isDead()) {
                     if (!g.isWeak()) {
+                        long seconds = (System.currentTimeMillis() - startTime) / 1000;
+                        Log.log("Ghosts won in " + seconds + " seconds");
+                        Statistic.log(windowParent.level, "Ghosts", seconds);
                         //Game Over
                         siren.stop();
                         com.aasma2020.pacman.SoundPlayer.play("pacman_lose.wav");
@@ -233,6 +238,9 @@ public class PacBoard extends JPanel implements KeyListener {
             scoreboard.setText("    Score : "+score);
 
             if(foods.size() == 0){
+                long seconds = (System.currentTimeMillis() - startTime) / 1000;
+                Log.log("Pacman won in " + seconds + " seconds");
+                Statistic.log(windowParent.level, "Pacman", seconds);
                 siren.stop();
                 pac6.stop();
                 SoundPlayer.play("pacman_intermission.wav");
