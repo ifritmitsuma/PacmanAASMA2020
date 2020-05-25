@@ -15,6 +15,8 @@ public class PacWindow extends JFrame {
     boolean singleplayerGame;
     int level = 0;
 
+    boolean soundMuted = true;
+
     public PacWindow(boolean singleplayerGame){
         this.singleplayerGame = singleplayerGame;
         setTitle("Pacman");
@@ -84,7 +86,7 @@ public class PacWindow extends JFrame {
 
         //int[][] mapLoaded = loadMap(27,29,"/maps/map1_backup.txt");
         adjustMap(md);
-        PacBoard pb = new PacBoard(scoreboard,md,this, singleplayerGame);
+        PacBoard pb = new PacBoard(scoreboard,md,this, singleplayerGame, soundMuted);
         pb.setBorder(new CompoundBorder(new EmptyBorder(10,10,10,10),new LineBorder(Color.BLUE)));
         addKeyListener(pb.pacman);
 
@@ -270,18 +272,21 @@ public class PacWindow extends JFrame {
         }
     }
 
-    public void newLevel() {
+    public void newLevel(Integer level) {
+
+        if(level == null) {
+            newLevel();
+            return;
+        }
 
         this.getContentPane().removeAll();
         this.getContentPane().revalidate();
 
         MapData map = getMapFromResource("maps/map" + (level + 1) + ".txt");
 
-        level = (level + 1) % 2;
-
         adjustMap(map);
 
-        PacBoard pb = new PacBoard(scoreboard,map,this,singleplayerGame);
+        PacBoard pb = new PacBoard(scoreboard,map,this,singleplayerGame, soundMuted);
 
         pb.setBorder(new CompoundBorder(new EmptyBorder(10,10,10,10),new LineBorder(Color.BLUE)));
         addKeyListener(pb);
@@ -289,6 +294,15 @@ public class PacWindow extends JFrame {
 
         this.getContentPane().add(scoreboard,BorderLayout.SOUTH);
         this.getContentPane().add(pb);
+
+    }
+
+    public void newLevel() {
+
+        newLevel(level);
+
+        level = (level + 1) % 2;
+
     }
 
 }

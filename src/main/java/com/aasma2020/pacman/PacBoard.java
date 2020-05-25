@@ -65,9 +65,10 @@ public class PacBoard extends JPanel implements KeyListener {
 
     boolean soundMuted = true;
 
-    public PacBoard(JLabel scoreboard,MapData md,PacWindow pw, boolean singleplayerGame){
+    public PacBoard(JLabel scoreboard,MapData md,PacWindow pw, boolean singleplayerGame, boolean soundMuted){
     	this.singleplayerGame = singleplayerGame;
         this.scoreboard = scoreboard;
+        this.soundMuted = soundMuted;
         this.setDoubleBuffered(true);
         md_backup = md;
         windowParent = pw;
@@ -398,12 +399,12 @@ public class PacBoard extends JPanel implements KeyListener {
 
         }
 
-        if(isGameOver){
-            g.drawImage(goImage,this.getSize().width/2-315,this.getSize().height/2-75,null);
-        }
-
-        if(isWin){
-            g.drawImage(vicImage,this.getSize().width/2-315,this.getSize().height/2-75,null);
+        if(isWin || isGameOver){
+            if(isGameOver) {
+                g.drawImage(goImage, this.getSize().width / 2 - 315, this.getSize().height / 2 - 75, null);
+            } else {
+                g.drawImage(vicImage,this.getSize().width/2-315,this.getSize().height/2-75,null);
+            }
             if(winSeconds > 0) {
                 if(winTimer == null) {
                     winTimer = new Timer(1000, new ActionListener() {
@@ -420,7 +421,7 @@ public class PacBoard extends JPanel implements KeyListener {
                 g.setFont(new Font("Arial",Font.BOLD,20));
                 g.drawString("Starting new level in " + winSeconds + " seconds", this.getSize().width / 2 - 135, this.getSize().height / 2 + 100);
             } else {
-                windowParent.newLevel();
+                windowParent.newLevel(isGameOver ? 0 : null);
             }
         }
 
@@ -557,6 +558,7 @@ public class PacBoard extends JPanel implements KeyListener {
             SoundPlayer.muteToggle(soundMuted);
             siren.muteToggle(soundMuted);
             pac6.muteToggle(soundMuted);
+            windowParent.soundMuted = soundMuted;
         }
 
     }

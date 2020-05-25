@@ -37,9 +37,7 @@ public class LoopPlayer {
 
     public void stop(){
         playing = false;
-        if(mute) {
-            muteSound();
-        }
+        muteSound();
     }
 
     public void unmuteSound() {
