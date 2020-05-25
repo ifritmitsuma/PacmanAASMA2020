@@ -1,18 +1,17 @@
-package com.aasma2020.pacman;
+package com.aasma2020.pacman.ghost;
+
+import com.aasma2020.pacman.helper.ImageHelper;
+import com.aasma2020.pacman.board.PacBoard;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
-import java.awt.event.ActionEvent;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Random;
-import java.util.concurrent.ThreadLocalRandom;
 
 
 public class OrangeGhost extends RandomGhost {
 
     public OrangeGhost(int x, int y, PacBoard pb){
-        super(x,y,pb,9);
+        super(x,y,pb,10);
     }
 
     @Override

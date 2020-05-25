@@ -1,8 +1,11 @@
-package com.aasma2020.pacman;
+package com.aasma2020.pacman.pacman;
 
+import com.aasma2020.pacman.board.Messeges;
+import com.aasma2020.pacman.board.PacBoard;
+import com.aasma2020.pacman.board.moveType;
 import com.aasma2020.pacman.communication.Agent;
 import com.aasma2020.pacman.communication.MapAreaInfo;
-import com.aasma2020.pacman.communication.Report;
+import com.aasma2020.pacman.ghost.Ghost;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -115,7 +118,7 @@ public class Pacman extends Agent implements KeyListener {
 
 				switch (activeMove) {
 				case RIGHT:
-					if ((pixelPosition.x >= (parentBoard.m_x - 1) * 28) && parentBoard.isCustom) {
+					if ((pixelPosition.x >= (parentBoard.m_x - 1) * 28) && parentBoard.isCustom()) {
 						return;
 					}
 					/*
@@ -124,14 +127,14 @@ public class Pacman extends Agent implements KeyListener {
 					 */
 					if (position.x >= 0 && position.x < parentBoard.m_x - 1 && position.y >= 0
 							&& position.y < parentBoard.m_y - 1) {
-						if (parentBoard.map[position.x + 1][position.y] > 0) {
+						if (parentBoard.getMap()[position.x + 1][position.y] > 0) {
 							return;
 						}
 					}
 					pixelPosition.x++;
 					break;
 				case LEFT:
-					if ((pixelPosition.x <= 0) && parentBoard.isCustom) {
+					if ((pixelPosition.x <= 0) && parentBoard.isCustom()) {
 						return;
 					}
 					/*
@@ -140,14 +143,14 @@ public class Pacman extends Agent implements KeyListener {
 					 */
 					if (position.x > 0 && position.x < parentBoard.m_x - 1 && position.y >= 0
 							&& position.y < parentBoard.m_y - 1) {
-						if (parentBoard.map[position.x - 1][position.y] > 0) {
+						if (parentBoard.getMap()[position.x - 1][position.y] > 0) {
 							return;
 						}
 					}
 					pixelPosition.x--;
 					break;
 				case UP:
-					if ((pixelPosition.y <= 0) && parentBoard.isCustom) {
+					if ((pixelPosition.y <= 0) && parentBoard.isCustom()) {
 						return;
 					}
 					/*
@@ -156,14 +159,14 @@ public class Pacman extends Agent implements KeyListener {
 					 */
 					if (position.x >= 0 && position.x < parentBoard.m_x - 1 && position.y >= 0
 							&& position.y < parentBoard.m_y - 1) {
-						if (parentBoard.map[position.x][position.y - 1] > 0) {
+						if (parentBoard.getMap()[position.x][position.y - 1] > 0) {
 							return;
 						}
 					}
 					pixelPosition.y--;
 					break;
 				case DOWN:
-					if ((pixelPosition.y >= (parentBoard.m_y - 1) * 28) && parentBoard.isCustom) {
+					if ((pixelPosition.y >= (parentBoard.m_y - 1) * 28) && parentBoard.isCustom()) {
 						return;
 					}
 					/*
@@ -172,7 +175,7 @@ public class Pacman extends Agent implements KeyListener {
 					 */
 					if (position.x >= 0 && position.x < parentBoard.m_x - 1 && position.y >= 0
 							&& position.y < parentBoard.m_y - 1) {
-						if (parentBoard.map[position.x][position.y + 1] > 0) {
+						if (parentBoard.getMap()[position.x][position.y + 1] > 0) {
 							return;
 						}
 					}
@@ -190,18 +193,34 @@ public class Pacman extends Agent implements KeyListener {
 
 	}
 
+	public Timer getMoveTimer() {
+		return moveTimer;
+	}
+
+	public void setMoveTimer(Timer moveTimer) {
+		this.moveTimer = moveTimer;
+	}
+
+	public Timer getAnimTimer() {
+		return animTimer;
+	}
+
+	public void setAnimTimer(Timer animTimer) {
+		this.animTimer = animTimer;
+	}
+
 	public boolean isPossibleMove(moveType move) {
 		if (position.x >= 0 && position.x < parentBoard.m_x - 1 && position.y >= 0
 				&& position.y < parentBoard.m_y - 1) {
 			switch (move) {
 			case RIGHT:
-				return !(parentBoard.map[position.x + 1][position.y] > 0);
+				return !(parentBoard.getMap()[position.x + 1][position.y] > 0);
 			case LEFT:
-				return !(parentBoard.map[position.x - 1][position.y] > 0);
+				return !(parentBoard.getMap()[position.x - 1][position.y] > 0);
 			case UP:
-				return !(parentBoard.map[position.x][position.y - 1] > 0);
+				return !(parentBoard.getMap()[position.x][position.y - 1] > 0);
 			case DOWN:
-				return !(parentBoard.map[position.x][position.y + 1] > 0);
+				return !(parentBoard.getMap()[position.x][position.y + 1] > 0);
 			}
 		}
 		return false;

@@ -1,4 +1,9 @@
-package com.aasma2020.pacman;
+package com.aasma2020.pacman.map;
+
+import com.aasma2020.pacman.pacman.Food;
+import com.aasma2020.pacman.pacman.PowerUpFood;
+import com.aasma2020.pacman.board.TeleportTunnel;
+import com.aasma2020.pacman.ghost.GhostData;
 
 import java.awt.*;
 import java.util.ArrayList;

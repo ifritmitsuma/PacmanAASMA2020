@@ -1,6 +1,10 @@
-package com.aasma2020.pacman;
+package com.aasma2020.pacman.ghost;
 
+import com.aasma2020.pacman.bfs.BFSFinder;
+import com.aasma2020.pacman.board.PacBoard;
+import com.aasma2020.pacman.board.Messeges;
 import com.aasma2020.pacman.board.Position;
+import com.aasma2020.pacman.board.moveType;
 import com.aasma2020.pacman.communication.MapAreaInfo;
 import com.aasma2020.pacman.communication.Report;
 import com.aasma2020.pacman.communication.SocietyAgent;
@@ -16,6 +20,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 
 public abstract class Ghost extends SocietyAgent {
+
     //Anim Vars
     Timer animTimer;
     ActionListener animAL;
@@ -157,9 +162,9 @@ public abstract class Ghost extends SocietyAgent {
 
                     //animTimer.stop();
                     //System.out.println("LOGICAL POS :" + logicalPosition.x + " , " + logicalPosition.y);
-                    //if(todoMove != com.aasma2020.pacman.moveType.NONE) {
+                    //if(todoMove != com.aasma2020.pacman.board.moveType.NONE) {
                     //    activeMove = todoMove;
-                    //    todoMove = com.aasma2020.pacman.moveType.NONE;
+                    //    todoMove = com.aasma2020.pacman.board.moveType.NONE;
                     //}
                 }else{
                     isStuck = false;
@@ -172,7 +177,7 @@ public abstract class Ghost extends SocietyAgent {
                         if(pixelPosition.x >= (parentBoard.m_x-1) * 28){
                             return;
                         }
-                        if((position.x+1 < parentBoard.m_x) && (parentBoard.map[position.x+1][position.y]>0) && ((parentBoard.map[position.x+1][position.y]<26)||isPending)){
+                        if((position.x+1 < parentBoard.m_x) && (parentBoard.getMap()[position.x+1][position.y]>0) && ((parentBoard.getMap()[position.x+1][position.y]<26)||isPending)){
                             return;
                         }
                         pixelPosition.x ++;
@@ -181,7 +186,7 @@ public abstract class Ghost extends SocietyAgent {
                         if(pixelPosition.x <= 0){
                             return;
                         }
-                        if((position.x-1 >= 0) && (parentBoard.map[position.x-1][position.y]>0) && ((parentBoard.map[position.x-1][position.y]<26)||isPending)){
+                        if((position.x-1 >= 0) && (parentBoard.getMap()[position.x-1][position.y]>0) && ((parentBoard.getMap()[position.x-1][position.y]<26)||isPending)){
                             return;
                         }
                         pixelPosition.x --;
@@ -190,7 +195,7 @@ public abstract class Ghost extends SocietyAgent {
                         if(pixelPosition.y <= 0){
                             return;
                         }
-                        if((position.y-1 >= 0) && (parentBoard.map[position.x][position.y-1]>0) && ((parentBoard.map[position.x][position.y-1]<26)||isPending)){
+                        if((position.y-1 >= 0) && (parentBoard.getMap()[position.x][position.y-1]>0) && ((parentBoard.getMap()[position.x][position.y-1]<26)||isPending)){
                             return;
                         }
                         pixelPosition.y--;
@@ -199,7 +204,7 @@ public abstract class Ghost extends SocietyAgent {
                         if(pixelPosition.y >= (parentBoard.m_y-1) * 28){
                             return;
                         }
-                        if((position.y+1 < parentBoard.m_y) && (parentBoard.map[position.x][position.y+1]>0) && ((parentBoard.map[position.x][position.y+1]<26)||isPending)){
+                        if((position.y+1 < parentBoard.m_y) && (parentBoard.getMap()[position.x][position.y+1]>0) && ((parentBoard.getMap()[position.x][position.y+1]<26)||isPending)){
                             return;
                         }
                         pixelPosition.y ++;
@@ -270,6 +275,22 @@ public abstract class Ghost extends SocietyAgent {
 
     }
 
+    public Timer getAnimTimer() {
+        return animTimer;
+    }
+
+    public void setAnimTimer(Timer animTimer) {
+        this.animTimer = animTimer;
+    }
+
+    public Timer getMoveTimer() {
+        return moveTimer;
+    }
+
+    public void setMoveTimer(Timer moveTimer) {
+        this.moveTimer = moveTimer;
+    }
+
     //load Images from Resource
     public abstract void loadImages();
 
@@ -282,19 +303,19 @@ public abstract class Ghost extends SocietyAgent {
 
         if(position.x >= 0 && position.x < parentBoard.m_x-1 && position.y >= 0 && position.y < parentBoard.m_y-1 ) {
             //System.out.println(this.toString());
-            if (!(parentBoard.map[position.x + 1][position.y] > 0)) {
+            if (!(parentBoard.getMap()[position.x + 1][position.y] > 0)) {
                 possibleMoves.add(moveType.RIGHT);
             }
 
-            if (!(parentBoard.map[position.x - 1][position.y] > 0)) {
+            if (!(parentBoard.getMap()[position.x - 1][position.y] > 0)) {
                 possibleMoves.add(moveType.LEFT);
             }
 
-            if(!(parentBoard.map[position.x][position.y-1]>0)){
+            if(!(parentBoard.getMap()[position.x][position.y-1]>0)){
                 possibleMoves.add(moveType.UP);
             }
 
-            if(!(parentBoard.map[position.x][position.y+1]>0)){
+            if(!(parentBoard.getMap()[position.x][position.y+1]>0)){
                 possibleMoves.add(moveType.DOWN);
             }
         }

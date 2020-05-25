@@ -1,4 +1,12 @@
-package com.aasma2020.pacman;
+package com.aasma2020.pacman.map;
+
+import com.aasma2020.pacman.ui.FansyButton;
+import com.aasma2020.pacman.pacman.Food;
+import com.aasma2020.pacman.ui.PacWindow;
+import com.aasma2020.pacman.pacman.PowerUpFood;
+import com.aasma2020.pacman.ghost.GhostData;
+import com.aasma2020.pacman.ghost.ghostType;
+import com.aasma2020.pacman.helper.StringHelper;
 
 import javax.swing.*;
 import javax.swing.border.CompoundBorder;
@@ -24,18 +32,18 @@ public class MapEditor extends JFrame {
         JPanel ghostSelection = new JPanel();
         ghostSelection.setLayout(new BoxLayout(ghostSelection,BoxLayout.Y_AXIS));
         ghostSelection.setBackground(Color.black);
-        JLabel l0 = new JLabel("= : Blank Space (without com.aasma2020.pacman.Food)");
-        JLabel l1 = new JLabel("_ : Blank Space (with com.aasma2020.pacman.Food)");
+        JLabel l0 = new JLabel("= : Blank Space (without com.aasma2020.pacman.pacman.Food)");
+        JLabel l1 = new JLabel("_ : Blank Space (with com.aasma2020.pacman.pacman.Food)");
         JLabel l2 = new JLabel("X : Wall");
         JLabel l3 = new JLabel("Y : Semi-Wall (Passable by Ghosts)");
-        JLabel l4 = new JLabel("P : com.aasma2020.pacman.Pacman Start Position");
-        JLabel l5 = new JLabel("1 : Red com.aasma2020.pacman.Ghost (Chaser)");
-        JLabel l6 = new JLabel("2 : Pink com.aasma2020.pacman.Ghost (Traveler)");
-        JLabel l7 = new JLabel("3 : Cyan com.aasma2020.pacman.Ghost (Patrol)");
-        JLabel l8 = new JLabel("4 : Orange com.aasma2020.pacman.Ghost (Pokey)");
+        JLabel l4 = new JLabel("P : com.aasma2020.pacman.pacman.Pacman Start Position");
+        JLabel l5 = new JLabel("1 : Red com.aasma2020.pacman.ghost.Ghost (Chaser)");
+        JLabel l6 = new JLabel("2 : Pink com.aasma2020.pacman.ghost.Ghost (Traveler)");
+        JLabel l7 = new JLabel("3 : Cyan com.aasma2020.pacman.ghost.Ghost (Patrol)");
+        JLabel l8 = new JLabel("4 : Orange com.aasma2020.pacman.ghost.Ghost (Pokey)");
         JLabel l9 = new JLabel("F : Fruit");
-        JLabel l10 = new JLabel("B : com.aasma2020.pacman.Ghost Base");
-        //JLabel l4 = new JLabel("1 : Red com.aasma2020.pacman.Ghost (Chaser)");
+        JLabel l10 = new JLabel("B : com.aasma2020.pacman.ghost.Ghost Base");
+        //JLabel l4 = new JLabel("1 : Red com.aasma2020.pacman.ghost.Ghost (Chaser)");
 
         l0.setForeground(Color.yellow);
         l1.setForeground(Color.yellow);
@@ -106,7 +114,7 @@ public class MapEditor extends JFrame {
         for(char c : input.toCharArray()){
             if(c == '1'){
                 map[i][j] = 0;
-                customMap.getGhostsData().add(new GhostData(i,j,ghostType.RED));
+                customMap.getGhostsData().add(new GhostData(i,j, ghostType.RED));
             }
             if(c == '2'){
                 map[i][j] = 0;
@@ -168,7 +176,7 @@ public class MapEditor extends JFrame {
         customMap.setCustom(true);
         System.out.println("Map Read OK !");
         return customMap;
-        //new com.aasma2020.pacman.PacWindow(customMap);
+        //new com.aasma2020.pacman.ui.PacWindow(customMap);
     }
 
 }

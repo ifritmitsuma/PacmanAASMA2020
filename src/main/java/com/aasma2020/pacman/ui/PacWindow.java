@@ -1,4 +1,10 @@
-package com.aasma2020.pacman;
+package com.aasma2020.pacman.ui;
+
+import com.aasma2020.pacman.log.Log;
+import com.aasma2020.pacman.log.Statistic;
+import com.aasma2020.pacman.board.PacBoard;
+import com.aasma2020.pacman.map.MapData;
+import com.aasma2020.pacman.map.MapEditor;
 
 import javax.swing.*;
 import javax.swing.border.CompoundBorder;
@@ -15,9 +21,10 @@ public class PacWindow extends JFrame {
 
     JLabel scoreboard;
     boolean singleplayerGame;
-    int level = 0;
 
-    boolean soundMuted = true;
+    private int level = 0;
+
+    private boolean soundMuted = true;
 
     public PacWindow(boolean singleplayerGame){
         this.singleplayerGame = singleplayerGame;
@@ -102,13 +109,28 @@ public class PacWindow extends JFrame {
         adjustMap(md);
         PacBoard pb = new PacBoard(scoreboard,md,this, singleplayerGame, soundMuted);
         pb.setBorder(new CompoundBorder(new EmptyBorder(10,10,10,10),new LineBorder(Color.BLUE)));
-        addKeyListener(pb.pacman);
+        addKeyListener(pb.getPacman());
 
         this.getContentPane().add(scoreboard,BorderLayout.SOUTH);
         this.getContentPane().add(pb);
         setVisible(true);
     }
 
+    public int getLevel() {
+        return level;
+    }
+
+    public void setLevel(int level) {
+        this.level = level;
+    }
+
+    public boolean isSoundMuted() {
+        return soundMuted;
+    }
+
+    public void setSoundMuted(boolean soundMuted) {
+        this.soundMuted = soundMuted;
+    }
 
     public int[][] loadMap(int mx,int my,String relPath){
         try {
@@ -310,7 +332,7 @@ public class PacWindow extends JFrame {
 
         pb.setBorder(new CompoundBorder(new EmptyBorder(10,10,10,10),new LineBorder(Color.BLUE)));
         addKeyListener(pb);
-        addKeyListener(pb.pacman);
+        addKeyListener(pb.getPacman());
 
         this.getContentPane().add(scoreboard,BorderLayout.SOUTH);
         this.getContentPane().add(pb);

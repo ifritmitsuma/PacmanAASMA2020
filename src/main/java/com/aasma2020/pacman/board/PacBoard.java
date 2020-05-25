@@ -1,7 +1,18 @@
-package com.aasma2020.pacman;
+package com.aasma2020.pacman.board;
 
 import com.aasma2020.pacman.communication.Agent;
 import com.aasma2020.pacman.communication.MapAreaInfo;
+import com.aasma2020.pacman.ghost.*;
+import com.aasma2020.pacman.helper.ImageHelper;
+import com.aasma2020.pacman.log.Log;
+import com.aasma2020.pacman.log.Statistic;
+import com.aasma2020.pacman.map.MapData;
+import com.aasma2020.pacman.pacman.Food;
+import com.aasma2020.pacman.pacman.Pacman;
+import com.aasma2020.pacman.pacman.PowerUpFood;
+import com.aasma2020.pacman.sound.LoopPlayer;
+import com.aasma2020.pacman.sound.SoundPlayer;
+import com.aasma2020.pacman.ui.PacWindow;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -29,14 +40,14 @@ public class PacBoard extends JPanel implements KeyListener {
 
     Image muteImage;
 
-    Pacman pacman;
+    private Pacman pacman;
     ArrayList<Food> foods;
     ArrayList<PowerUpFood> pufoods;
     ArrayList<Ghost> ghosts;
     ArrayList<TeleportTunnel> teleports;
 
     boolean singleplayerGame;
-    boolean isCustom = false;
+    private boolean custom = false;
     boolean isGameOver = false;
     boolean isWin = false;
     boolean drawScore = false;
@@ -79,7 +90,7 @@ public class PacBoard extends JPanel implements KeyListener {
         m_y = md.getY();
         this.map = md.getMap();
 
-        this.isCustom = md.isCustom();
+        this.custom = md.isCustom();
         this.ghostBase = md.getGhostBasePosition();
 
         //loadMap();
@@ -94,7 +105,7 @@ public class PacBoard extends JPanel implements KeyListener {
 
         //TODO : read food from mapData (Map 1)
 
-        if(!isCustom) {
+        if(!custom) {
             for (int i = 0; i < m_x; i++) {
                 for (int j = 0; j < m_y; j++) {
                     if (map[i][j] == 0)
@@ -169,7 +180,7 @@ public class PacBoard extends JPanel implements KeyListener {
         redrawTimer = new Timer(16,redrawAL);
         redrawTimer. start();
 
-        //com.aasma2020.pacman.SoundPlayer.play("pacman_start.wav");
+        //com.aasma2020.pacman.sound.SoundPlayer.play("pacman_start.wav");
         SoundPlayer.muteToggle(soundMuted);
         siren = new LoopPlayer("siren.wav");
         pac6 = new LoopPlayer("pac6.wav");
@@ -179,6 +190,18 @@ public class PacBoard extends JPanel implements KeyListener {
             siren.muteToggle(true);
             pac6.muteToggle(true);
         }
+    }
+
+    public boolean isCustom() {
+        return custom;
+    }
+
+    public int[][] getMap() {
+        return map;
+    }
+
+    public Pacman getPacman() {
+        return pacman;
     }
 
     private void collisionTest(){
@@ -192,19 +215,19 @@ public class PacBoard extends JPanel implements KeyListener {
                     if (!g.isWeak()) {
                         long seconds = (System.currentTimeMillis() - startTime) / 1000;
                         Log.log("Ghosts won in " + seconds + " seconds");
-                        Statistic.log(windowParent.level, "Ghosts", seconds);
+                        Statistic.log(windowParent.getLevel(), "Ghosts", seconds);
                         //Game Over
                         siren.stop();
-                        com.aasma2020.pacman.SoundPlayer.play("pacman_lose.wav");
-                        pacman.moveTimer.stop();
-                        pacman.animTimer.stop();
-                        g.moveTimer.stop();
+                        SoundPlayer.play("pacman_lose.wav");
+                        pacman.getMoveTimer().stop();
+                        pacman.getAnimTimer().stop();
+                        g.getMoveTimer().stop();
                         isGameOver = true;
                         scoreboard.setText("    Press R to try again !");
                         //scoreboard.setForeground(Color.red);
                         break;
                     } else {
-                        //Eat com.aasma2020.pacman.Ghost
+                        //Eat com.aasma2020.pacman.ghost.Ghost
                         SoundPlayer.play("pacman_eatghost.wav");
                         //getGraphics().setFont(new Font("Arial",Font.BOLD,20));
                         drawScore = true;
@@ -240,14 +263,14 @@ public class PacBoard extends JPanel implements KeyListener {
             if(foods.size() == 0){
                 long seconds = (System.currentTimeMillis() - startTime) / 1000;
                 Log.log("Pacman won in " + seconds + " seconds");
-                Statistic.log(windowParent.level, "Pacman", seconds);
+                Statistic.log(windowParent.getLevel(), "Pacman", seconds);
                 siren.stop();
                 pac6.stop();
                 SoundPlayer.play("pacman_intermission.wav");
                 isWin = true;
-                pacman.moveTimer.stop();
+                pacman.getMoveTimer().stop();
                 for(Ghost g : ghosts){
-                    g.moveTimer.stop();
+                    g.getMoveTimer().stop();
                 }
             }
         }
@@ -259,7 +282,7 @@ public class PacBoard extends JPanel implements KeyListener {
                 puFoodToEat = puf;
         }
         if(puFoodToEat!=null) {
-            //com.aasma2020.pacman.SoundPlayer.play("pacman_eat.wav");
+            //com.aasma2020.pacman.sound.SoundPlayer.play("pacman_eat.wav");
             switch(puFoodToEat.type) {
                 case 0:
                     //PACMAN 6
@@ -282,7 +305,7 @@ public class PacBoard extends JPanel implements KeyListener {
             //scoreboard.setText("    Score : "+score);
         }
 
-        //Check com.aasma2020.pacman.Ghost Undie
+        //Check com.aasma2020.pacman.ghost.Ghost Undie
         for(Ghost g:ghosts){
             if(g.isDead() && g.getPosition().x == ghostBase.x && g.getPosition().y == ghostBase.y){
                 g.undie();
@@ -343,7 +366,7 @@ public class PacBoard extends JPanel implements KeyListener {
             }
         }
 
-        //Draw com.aasma2020.pacman.Food
+        //Draw com.aasma2020.pacman.pacman.Food
         g.setColor(new Color(204, 122, 122));
         for(Food f : foods){
             //g.fillOval(f.position.x*28+22,f.position.y*28+22,4,4);
@@ -357,7 +380,7 @@ public class PacBoard extends JPanel implements KeyListener {
             g.drawImage(pfoodImage[f.type],10+f.getPosition().x*28,10+f.getPosition().y*28,null);
         }
 
-        //Draw com.aasma2020.pacman.Pacman
+        //Draw com.aasma2020.pacman.pacman.Pacman
         switch(pacman.activeMove){
             case NONE:
             case RIGHT:
@@ -500,7 +523,7 @@ public class PacBoard extends JPanel implements KeyListener {
 
         isGameOver = false;
 
-        pacman = new com.aasma2020.pacman.Pacman(md_backup.getPacmanPosition().x,md_backup.getPacmanPosition().y,this);
+        pacman = new com.aasma2020.pacman.pacman.Pacman(md_backup.getPacmanPosition().x,md_backup.getPacmanPosition().y,this);
         addKeyListener(pacman);
 
         foods = new ArrayList<>();
@@ -514,7 +537,7 @@ public class PacBoard extends JPanel implements KeyListener {
             for (int i = 0; i < m_x; i++) {
                 for (int j = 0; j < m_y; j++) {
                     if (map[i][j] == 0)
-                        foods.add(new com.aasma2020.pacman.Food(i, j));
+                        foods.add(new com.aasma2020.pacman.pacman.Food(i, j));
                 }
             }
         }else{
@@ -526,16 +549,16 @@ public class PacBoard extends JPanel implements KeyListener {
         pufoods = md_backup.getPufoodPositions();
 
         ghosts = new ArrayList<>();
-        for(com.aasma2020.pacman.GhostData gd : md_backup.getGhostsData()){
+        for(com.aasma2020.pacman.ghost.GhostData gd : md_backup.getGhostsData()){
             switch(gd.getType()) {
                 case RED:
-                    ghosts.add(new com.aasma2020.pacman.RedGhost(gd.getX(), gd.getY(), this));
+                    ghosts.add(new com.aasma2020.pacman.ghost.RedGhost(gd.getX(), gd.getY(), this));
                     break;
                 case PINK:
-                    ghosts.add(new com.aasma2020.pacman.PinkGhost(gd.getX(), gd.getY(), this));
+                    ghosts.add(new com.aasma2020.pacman.ghost.PinkGhost(gd.getX(), gd.getY(), this));
                     break;
                 case CYAN:
-                    ghosts.add(new com.aasma2020.pacman.CyanGhost(gd.getX(), gd.getY(), this));
+                    ghosts.add(new com.aasma2020.pacman.ghost.CyanGhost(gd.getX(), gd.getY(), this));
                     break;
             }
         }
@@ -566,7 +589,7 @@ public class PacBoard extends JPanel implements KeyListener {
             SoundPlayer.muteToggle(soundMuted);
             siren.muteToggle(soundMuted);
             pac6.muteToggle(soundMuted);
-            windowParent.soundMuted = soundMuted;
+            windowParent.setSoundMuted(soundMuted);
         }
 
     }

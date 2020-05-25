@@ -1,4 +1,8 @@
-package com.aasma2020.pacman;
+package com.aasma2020.pacman.ghost;
+
+import com.aasma2020.pacman.bfs.BFSFinder;
+import com.aasma2020.pacman.board.PacBoard;
+import com.aasma2020.pacman.board.moveType;
 
 import java.util.ArrayList;
 import java.util.concurrent.ThreadLocalRandom;

@@ -1,4 +1,7 @@
-package com.aasma2020.pacman;
+package com.aasma2020.pacman.ui;
+
+import com.aasma2020.pacman.log.Statistic;
+import com.aasma2020.pacman.map.MapEditor;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;

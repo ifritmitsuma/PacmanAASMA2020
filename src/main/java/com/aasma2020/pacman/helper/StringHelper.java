@@ -1,4 +1,4 @@
-package com.aasma2020.pacman;
+package com.aasma2020.pacman.helper;
 
 /**
  * Created by Armin on 4/29/2016.

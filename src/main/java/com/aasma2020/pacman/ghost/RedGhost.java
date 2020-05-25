@@ -1,15 +1,15 @@
-package com.aasma2020.pacman;
+package com.aasma2020.pacman.ghost;
+
+import com.aasma2020.pacman.helper.ImageHelper;
+import com.aasma2020.pacman.board.PacBoard;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
-import java.awt.event.ActionEvent;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.concurrent.ThreadLocalRandom;
 
 public class RedGhost extends WandererGhost {
 
-    public RedGhost(int x, int y,PacBoard pb){
+    public RedGhost(int x, int y, PacBoard pb){
         super(x,y,pb,12);
     }
 

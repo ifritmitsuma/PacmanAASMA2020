@@ -1,4 +1,4 @@
-package com.aasma2020.pacman;
+package com.aasma2020.pacman.pacman;
 
 import com.aasma2020.pacman.board.BoardElement;
 

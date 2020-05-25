@@ -1,4 +1,4 @@
-package com.aasma2020.pacman;
+package com.aasma2020.pacman.helper;
 
 import java.awt.*;
 import java.awt.geom.AffineTransform;

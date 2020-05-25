@@ -1,7 +1,7 @@
 package com.aasma2020.pacman.communication;
 
 import com.aasma2020.pacman.board.Position;
-import com.aasma2020.pacman.moveType;
+import com.aasma2020.pacman.board.moveType;
 
 public class Report {
 

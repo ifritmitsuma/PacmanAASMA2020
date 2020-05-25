@@ -1,4 +1,4 @@
-package com.aasma2020.pacman;
+package com.aasma2020.pacman.ui;
 
 import javax.swing.*;
 import java.awt.*;
